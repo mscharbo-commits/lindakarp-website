@@ -16,7 +16,7 @@ export default function Home() {
 
   const generatePDF = () => {
     const content = `
-MEDICARE COVERAGE ANALYSIS
+ASSESSMENT REPORT
 Generated: ${new Date().toLocaleDateString()}
 
 PROFILE:
@@ -33,17 +33,26 @@ Email: info@lindakarp.com
 
     const element = document.createElement('a')
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content))
-    element.setAttribute('download', 'medicare-analysis.txt')
+    element.setAttribute('download', 'assessment-report.txt')
     element.style.display = 'none'
     document.body.appendChild(element)
     element.click()
     document.body.removeChild(element)
   }
 
+  const incomeRanges = {
+    'under25': { label: 'Under $25,000', value: 20000 },
+    '25to50': { label: '$25,000 - $50,000', value: 37500 },
+    '50to75': { label: '$50,000 - $75,000', value: 62500 },
+    '75to100': { label: '$75,000 - $100,000', value: 87500 },
+    '100to150': { label: '$100,000 - $150,000', value: 125000 },
+    '150plus': { label: '$150,000+', value: 175000 }
+  }
+
   const calculateMedicareResults = () => {
     const age = parseInt(quizAnswers.age) || 0
     const employed = quizAnswers.employed === 'yes'
-    const income = parseInt(quizAnswers.income) || 0
+    const income = incomeRanges[quizAnswers.income]?.value || 0
     const conditions = quizAnswers.conditions === 'yes'
     const medications = parseInt(quizAnswers.medications) || 0
     const doctorPreference = quizAnswers.doctorPreference
@@ -73,12 +82,12 @@ Email: info@lindakarp.com
       recommendations,
       estimatedCosts,
       eligible: age >= 65,
-      details: `Age: ${age} | Employment: ${employed ? 'Working' : 'Retired'} | Income: $${income}k | Chronic Conditions: ${conditions ? 'Yes' : 'No'} | # of Medications: ${medications} | Doctor Preference: ${doctorPreference}`
+      details: `Age: ${age} | Employment: ${employed ? 'Working' : 'Retired'} | Income: ${quizAnswers.income ? incomeRanges[quizAnswers.income].label : 'Not specified'} | Chronic Conditions: ${conditions ? 'Yes' : 'No'} | # of Medications: ${medications} | Doctor Preference: ${doctorPreference}`
     })
   }
 
   const calculateIndividualResults = () => {
-    const income = parseInt(quizAnswers.ind_income) || 0
+    const income = incomeRanges[quizAnswers.ind_income]?.value || 0
     const householdSize = parseInt(quizAnswers.ind_household) || 1
     const employed = quizAnswers.ind_employed === 'yes'
     const hasPreexisting = quizAnswers.ind_preexisting === 'yes'
@@ -107,7 +116,7 @@ Email: info@lindakarp.com
       recommendations: options,
       estimatedCosts: [subsidyAmount],
       eligible: true,
-      details: `Annual Income: $${income}k | Household Size: ${householdSize} | Currently Employed: ${employed ? 'Yes' : 'No'} | Pre-existing Conditions: ${hasPreexisting ? 'Yes' : 'No'}`
+      details: `Annual Income: ${quizAnswers.ind_income ? incomeRanges[quizAnswers.ind_income].label : 'Not specified'} | Household Size: ${householdSize} | Currently Employed: ${employed ? 'Yes' : 'No'} | Pre-existing Conditions: ${hasPreexisting ? 'Yes' : 'No'}`
     })
   }
 
@@ -654,8 +663,16 @@ Email: info@lindakarp.com
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-bold mb-2 text-gray-900">Annual income: $</label>
-                      <input type="number" placeholder="30000" onChange={(e) => handleQuizAnswer('income', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm" />
+                      <label className="block text-sm font-bold mb-2 text-gray-900">Annual household income:</label>
+                      <select onChange={(e) => handleQuizAnswer('income', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm">
+                        <option value="">Select income range...</option>
+                        <option value="under25">Under $25,000</option>
+                        <option value="25to50">$25,000 - $50,000</option>
+                        <option value="50to75">$50,000 - $75,000</option>
+                        <option value="75to100">$75,000 - $100,000</option>
+                        <option value="100to150">$100,000 - $150,000</option>
+                        <option value="150plus">$150,000+</option>
+                      </select>
                     </div>
                     <div>
                       <label className="block text-sm font-bold mb-2 text-gray-900">Do you have chronic health conditions? (diabetes, heart disease, etc.)</label>
@@ -690,8 +707,16 @@ Email: info@lindakarp.com
                 {showQuiz === 'individual' && (
                   <>
                     <div>
-                      <label className="block text-sm font-bold mb-2 text-gray-900">Annual household income: $</label>
-                      <input type="number" placeholder="45000" onChange={(e) => handleQuizAnswer('ind_income', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm" />
+                      <label className="block text-sm font-bold mb-2 text-gray-900">Annual household income:</label>
+                      <select onChange={(e) => handleQuizAnswer('ind_income', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm">
+                        <option value="">Select income range...</option>
+                        <option value="under25">Under $25,000</option>
+                        <option value="25to50">$25,000 - $50,000</option>
+                        <option value="50to75">$50,000 - $75,000</option>
+                        <option value="75to100">$75,000 - $100,000</option>
+                        <option value="100to150">$100,000 - $150,000</option>
+                        <option value="150plus">$150,000+</option>
+                      </select>
                     </div>
                     <div>
                       <label className="block text-sm font-bold mb-2 text-gray-900">Household size:</label>

@@ -10,12 +10,7 @@ export default function Home() {
   const [loadingAssessment, setLoadingAssessment] = useState(false)
 
   const handleQuizAnswer = (question, answer) => {
-    console.log(`User input - ${question}: "${answer}"`)
-    setQuizAnswers(prev => {
-      const updated = {...prev, [question]: answer}
-      console.log(`quizAnswers after update:`, updated)
-      return updated
-    })
+    setQuizAnswers(prev => ({...prev, [question]: answer}))
   }
 
   const handleOpenQuiz = (quizType) => {
@@ -223,13 +218,10 @@ export default function Home() {
   }
 
   const calculateMedicareResults = () => {
-    console.log('Medicare quiz submission - full quizAnswers:', quizAnswers)
     const age = parseInt(quizAnswers.age) || 0
-    console.log('Parsed age:', age, 'from quizAnswers.age:', quizAnswers.age)
     const employed = quizAnswers.employed === 'yes'
     const conditions = quizAnswers.conditions === 'yes'
     const medications = parseInt(quizAnswers.medications) || 0
-    console.log('Medicare details - employed:', employed, 'conditions:', conditions, 'medications:', medications)
 
     let recommendations = []
     let estimatedCosts = []
@@ -263,10 +255,8 @@ export default function Home() {
   }
 
   const calculateIndividualResults = () => {
-    console.log('Individual quiz submission - full quizAnswers:', quizAnswers)
     const income = incomeRanges[quizAnswers.ind_income]?.value || 0
     const householdSize = parseInt(quizAnswers.ind_household) || 1
-    console.log('Individual details - income:', income, 'householdSize:', householdSize)
 
     let options = []
     const fpl = householdSize * 14580
@@ -297,10 +287,8 @@ export default function Home() {
   }
 
   const calculateGroupResults = () => {
-    console.log('Group quiz submission - full quizAnswers:', quizAnswers)
     const employees = parseInt(quizAnswers.group_employees) || 0
     const budget = parseInt(quizAnswers.group_budget) || 0
-    console.log('Group details - employees:', employees, 'budget:', budget)
 
     let options = []
     let taxCredit = 0

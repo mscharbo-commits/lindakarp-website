@@ -6,6 +6,8 @@ export default function Home() {
   const [showQuiz, setShowQuiz] = useState(null)
   const [quizAnswers, setQuizAnswers] = useState({})
   const [quizResults, setQuizResults] = useState(null)
+  const [aiAssessment, setAiAssessment] = useState(null)
+  const [loadingAssessment, setLoadingAssessment] = useState(false)
 
   const handleQuizAnswer = (question, answer) => {
     setQuizAnswers(prev => ({...prev, [question]: answer}))
@@ -14,10 +16,47 @@ export default function Home() {
   const handleOpenQuiz = (quizType) => {
     setQuizAnswers({})
     setQuizResults(null)
+    setAiAssessment(null)
     setShowQuiz(quizType)
   }
 
-  const generatePDF = () => {
+  const generateAiAssessment = async (quizType, answers, recommendations) => {
+    setLoadingAssessment(true)
+    try {
+      const prompt = quizType === 'medicare' 
+        ? `You are an insurance sales coach. Analyze this Medicare lead and provide a brief pitch strategy (3-4 sentences max) for Linda to follow up with them. Their info: Age: ${answers.age}, Employment: ${answers.employed}, Chronic conditions: ${answers.conditions}, Medications: ${answers.medications}. Their recommended plan: ${recommendations[0]}. Give specific talking points focused on their situation.`
+        : quizType === 'individual'
+        ? `You are an insurance sales coach. Analyze this Individual/Family plan lead and provide a brief pitch strategy (3-4 sentences max) for Linda to follow up with them. Their info: Household size: ${answers.ind_household}, Income: ${answers.ind_income}, Employment: ${answers.ind_employed}, Pre-existing: ${answers.ind_preexisting}. Recommended subsidy level: ${recommendations[0]}. Give specific talking points focused on their savings opportunity.`
+        : `You are an insurance sales coach. Analyze this Group benefits lead and provide a brief pitch strategy (3-4 sentences max) for Linda to follow up with them. Their info: Company: ${answers.company || 'Not provided'}, Employees: ${answers.group_employees}, Salary: ${answers.group_salary}, Budget: ${answers.group_budget}. Tax credit available: ${recommendations[0]}. Give specific talking points focused on attracting/retaining talent and tax savings.`
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'claude-opus-4-1',
+          max_tokens: 300,
+          messages: [
+            { role: 'user', content: prompt }
+          ]
+        })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        const assessmentText = data.content[0].type === 'text' ? data.content[0].text : ''
+        setAiAssessment(assessmentText)
+      } else {
+        console.error('API error:', response.status)
+        setAiAssessment('Sales pitch assessment unavailable.')
+      }
+    } catch (err) {
+      console.error('Error generating assessment:', err)
+      setAiAssessment('Sales pitch assessment unavailable.')
+    }
+    setLoadingAssessment(false)
+  }
     if (!window.jspdf) {
       alert('PDF library is loading. Please try again in a moment.')
       return
@@ -126,14 +165,37 @@ export default function Home() {
       }
     })
 
-    yPos += 5
+    yPos += 8
 
     // Divider
     doc.setDrawColor(100, 150, 200)
     doc.line(margin, yPos, pageWidth - margin, yPos)
     yPos += 8
 
-    // Footer message
+    // AI Assessment Section (for Linda's follow-up)
+    if (aiAssessment) {
+      doc.setFontSize(12)
+      doc.setFont('helvetica', 'bold')
+      doc.text('Sales Pitch Strategy (for Linda):', margin, yPos)
+      yPos += 6
+
+      doc.setFontSize(10)
+      doc.setFont('helvetica', 'normal')
+      const assessmentLines = doc.splitTextToSize(aiAssessment, pageWidth - 2 * margin - 5)
+      doc.text(assessmentLines, margin + 5, yPos)
+      yPos += assessmentLines.length * 5 + 5
+
+      // Check if we need a new page
+      if (yPos > pageHeight - 20) {
+        doc.addPage()
+        yPos = margin
+      }
+
+      // Divider
+      doc.setDrawColor(100, 150, 200)
+      doc.line(margin, yPos, pageWidth - margin, yPos)
+      yPos += 8
+    }
     doc.setFontSize(9)
     doc.setFont('helvetica', 'italic')
     doc.setTextColor(100, 100, 100)
@@ -185,6 +247,9 @@ export default function Home() {
       estimatedCosts,
       details: `Age: ${age} | Employment: ${employed ? 'Working' : 'Retired'} | Chronic Conditions: ${conditions ? 'Yes' : 'No'} | # of Medications: ${medications}`
     })
+    
+    // Generate AI assessment for sales pitch
+    generateAiAssessment('medicare', quizAnswers, recommendations)
   }
 
   const calculateIndividualResults = () => {
@@ -214,6 +279,9 @@ export default function Home() {
       estimatedCosts: ['Visit CoveredCA.com to apply'],
       details: `Annual Income: ${quizAnswers.ind_income ? incomeRanges[quizAnswers.ind_income].label : 'Not specified'} | Household Size: ${householdSize}`
     })
+    
+    // Generate AI assessment for sales pitch
+    generateAiAssessment('individual', quizAnswers, options)
   }
 
   const calculateGroupResults = () => {
@@ -237,6 +305,9 @@ export default function Home() {
       estimatedCosts: [`Tax Credit: $${Math.round(taxCredit)}/month`, `Total Premium Range: $${Math.round(budget * employees)}-${Math.round(budget * employees * 1.2)}/month`],
       details: `Employees: ${employees} | Budget/Employee/Month: $${budget}`
     })
+    
+    // Generate AI assessment for sales pitch
+    generateAiAssessment('group', quizAnswers, options)
   }
 
   const Logo = () => (
@@ -498,7 +569,7 @@ export default function Home() {
                 {showQuiz === 'individual' && 'Individual Plan Assessment'}
                 {showQuiz === 'group' && 'Group Plan Assessment'}
               </h3>
-              <button onClick={() => { setShowQuiz(null); setQuizAnswers({}); setQuizResults(null); }} className="text-2xl text-gray-400">×</button>
+              <button onClick={() => { setShowQuiz(null); setQuizAnswers({}); setQuizResults(null); setAiAssessment(null); }} className="text-2xl text-gray-400">×</button>
             </div>
 
             {!quizResults ? (
@@ -615,6 +686,20 @@ export default function Home() {
                   <p className="text-xs text-gray-700"><strong>Email:</strong> {quizAnswers.email || '(not provided)'}</p>
                   <p className="text-xs text-gray-700"><strong>Phone:</strong> {quizAnswers.phone || '(not provided)'}</p>
                 </div>
+                
+                {aiAssessment && (
+                  <div className="bg-amber-50 border border-amber-300 p-4 rounded">
+                    <p className="text-sm font-semibold text-gray-900 mb-2">💡 Sales Pitch Strategy</p>
+                    <p className="text-xs text-gray-700 leading-relaxed">{aiAssessment}</p>
+                  </div>
+                )}
+                
+                {loadingAssessment && (
+                  <div className="bg-blue-50 border border-blue-300 p-3 rounded">
+                    <p className="text-xs text-gray-700">🤖 Generating sales pitch strategy...</p>
+                  </div>
+                )}
+                
                 <div className="bg-gray-100 p-4 rounded text-xs text-gray-700">{quizResults.details}</div>
                 {quizResults.recommendations.map((r, i) => (
                   <div key={i} className="bg-blue-50 border border-blue-200 p-4 rounded">
@@ -624,7 +709,7 @@ export default function Home() {
                 ))}
                 <div className="flex gap-2 pt-4">
                   <button onClick={generatePDF} className="flex-1 px-4 py-2 bg-blue-600 text-white rounded font-bold text-sm">Download PDF</button>
-                  <button onClick={() => { setQuizAnswers({}); setQuizResults(null); }} className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded text-sm">Start Over</button>
+                  <button onClick={() => { setQuizAnswers({}); setQuizResults(null); setAiAssessment(null); }} className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded text-sm">Start Over</button>
                 </div>
               </div>
             )}

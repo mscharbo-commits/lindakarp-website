@@ -357,7 +357,7 @@ export default function Home() {
                   <p className="text-sm text-gray-600">San Diego, CA • (619) 439-2110</p>
                 </div>
                 <div className="rounded-lg overflow-hidden shadow-lg">
-                  <img src="https://images.unsplash.com/photo-1631217314831-c6227db76b6e?w=600&h=400&fit=crop" alt="Healthcare consultation with people" className="w-full h-80 object-cover"/>
+                  <img src="https://images.unsplash.com/photo-1576091160645-81f2ae649e2f?w=600&h=400&fit=crop" alt="Healthcare consultation" className="w-full h-80 object-cover"/>
                 </div>
               </div>
             </div>

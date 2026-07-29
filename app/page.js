@@ -220,19 +220,19 @@ export default function Home() {
     if (age >= 65) {
       if (conditions || medications >= 3) {
         recommendations.push('Medicare Advantage (Part C) - Covers prescriptions, often $0 premium')
-        estimatedCosts.push('$0-150/month + copays')
+        estimatedCosts.push('Premium: $0-150/month (copays for visits/drugs)')
       } else {
         recommendations.push('Medicare Supplement Plan G - Most comprehensive gap coverage')
-        estimatedCosts.push('$140-300/month')
+        estimatedCosts.push('Premium: $140-300/month')
       }
       
       if (medications > 0) {
         recommendations.push('Part D Prescription Drug - Match to your specific medications')
-        estimatedCosts.push('$30-100/month')
+        estimatedCosts.push('Premium: $30-100/month')
       }
 
       recommendations.push('Review Enrollment Deadlines - Avoid lifetime penalties')
-      estimatedCosts.push('Critical: Act within 7 months of 65th birthday')
+      estimatedCosts.push('Critical: Enroll within 7 months of 65th birthday')
     }
 
     setQuizResults({
@@ -255,16 +255,16 @@ export default function Home() {
 
     if (incomePercent <= 150) {
       options.push('MAXIMUM subsidy eligibility - Likely covers most or all premium')
-      options.push('Estimated help: $400-600/month')
+      options.push('Monthly subsidy help: $400-600/month')
     } else if (incomePercent <= 200) {
       options.push('Substantial subsidies available')
-      options.push('Estimated help: $200-400/month')
+      options.push('Monthly subsidy help: $200-400/month')
     } else if (incomePercent <= 400) {
       options.push('Moderate subsidies may apply')
-      options.push('Estimated help: $50-200/month')
+      options.push('Monthly subsidy help: $50-200/month')
     } else {
       options.push('Limited/no subsidies available')
-      options.push('Full price: $300-700/month')
+      options.push('Monthly premium cost: $300-700/month (unsubsidized)')
     }
 
     setQuizResults({
@@ -287,15 +287,15 @@ export default function Home() {
     if (employees >= 2 && employees <= 50) {
       const credit = Math.min((employees * 7980 * 0.5) / 12, employees * budget)
       taxCredit = credit
-      options.push(`SHOP Marketplace Eligible - Est. Monthly Tax Credit: $${Math.round(credit)}`)
-      options.push(`Your Employer Contribution: $${Math.round(budget * employees - credit)}/month`)
+      options.push(`SHOP Marketplace Eligible - Monthly tax credit available: $${Math.round(credit)}`)
+      options.push(`Employer contribution after tax credit: $${Math.round(budget * employees - credit)}/month`)
     }
 
-    options.push(`Total Employee Cost Share: $${Math.round(budget * 0.3 * employees)}/month (approx 30%)`)
+    options.push(`Employee monthly contribution (approx 30%): $${Math.round(budget * 0.3 * employees)}/month`)
 
     setQuizResults({
       recommendations: options,
-      estimatedCosts: [`Tax Credit: $${Math.round(taxCredit)}/month`, `Total Premium Range: $${Math.round(budget * employees)}-${Math.round(budget * employees * 1.2)}/month`],
+      estimatedCosts: [`Estimated monthly tax credit: $${Math.round(taxCredit)}`, `Estimated total monthly premium (all employees): $${Math.round(budget * employees)}-${Math.round(budget * employees * 1.2)}/month`],
       details: `Employees: ${employees} | Budget/Employee/Month: $${budget}`
     })
     

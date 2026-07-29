@@ -356,25 +356,8 @@ export default function Home() {
 
                   <p className="text-sm text-gray-600">San Diego, CA • (619) 439-2110</p>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="rounded-lg overflow-hidden shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=300&h=280&fit=crop" alt="Medicare" className="w-full h-72 object-cover"/>
-                    <div className="bg-white p-3 text-center">
-                      <p className="font-semibold text-gray-900 text-sm">Medicare</p>
-                    </div>
-                  </div>
-                  <div className="rounded-lg overflow-hidden shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=300&h=280&fit=crop" alt="Individual" className="w-full h-72 object-cover"/>
-                    <div className="bg-white p-3 text-center">
-                      <p className="font-semibold text-gray-900 text-sm">Individual</p>
-                    </div>
-                  </div>
-                  <div className="rounded-lg overflow-hidden shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=300&h=280&fit=crop" alt="Group" className="w-full h-72 object-cover"/>
-                    <div className="bg-white p-3 text-center">
-                      <p className="font-semibold text-gray-900 text-sm">Group</p>
-                    </div>
-                  </div>
+                <div className="rounded-lg overflow-hidden shadow-lg">
+                  <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop" alt="Healthcare consultation" className="w-full h-80 object-cover"/>
                 </div>
               </div>
             </div>

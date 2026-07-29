@@ -11,6 +11,12 @@ export default function Home() {
     setQuizAnswers(prev => ({...prev, [question]: answer}))
   }
 
+  const handleOpenQuiz = (quizType) => {
+    setQuizAnswers({})
+    setQuizResults(null)
+    setShowQuiz(quizType)
+  }
+
   const generatePDF = () => {
     if (!window.jspdf) {
       alert('PDF library is loading. Please try again in a moment.')
@@ -356,7 +362,7 @@ export default function Home() {
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Medicare Planning & Guidance</h1>
             <p className="text-gray-700 text-lg mb-6">Turning 65? Let's find the right Medicare coverage for you. With 28 years of experience, I help clients understand all options and avoid costly mistakes.</p>
-            <button onClick={() => setShowQuiz('medicare')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Start Your Medicare Assessment</button>
+            <button onClick={() => handleOpenQuiz('medicare')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Start Your Medicare Assessment</button>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
@@ -393,7 +399,7 @@ export default function Home() {
 
           <div className="bg-blue-100 border border-blue-300 rounded-lg p-8 text-center">
             <p className="text-gray-900 font-semibold mb-4 text-lg">Ready to find your best Medicare plan?</p>
-            <button onClick={() => setShowQuiz('medicare')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Get Personalized Recommendations</button>
+            <button onClick={() => handleOpenQuiz('medicare')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Get Personalized Recommendations</button>
           </div>
         </section>
       )}
@@ -405,7 +411,7 @@ export default function Home() {
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Individual & Family Health Plans</h1>
             <p className="text-gray-700 text-lg mb-6">Coverage through CoveredCA with subsidy optimization. Many Californians qualify for government assistance to lower their monthly costs.</p>
-            <button onClick={() => setShowQuiz('individual')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Check Your Subsidy Eligibility</button>
+            <button onClick={() => handleOpenQuiz('individual')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Check Your Subsidy Eligibility</button>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
@@ -435,7 +441,7 @@ export default function Home() {
 
           <div className="bg-blue-100 border border-blue-300 rounded-lg p-8 text-center">
             <p className="text-gray-900 font-semibold mb-4 text-lg">See how much you could save on monthly premiums.</p>
-            <button onClick={() => setShowQuiz('individual')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Get Your Subsidy Estimate</button>
+            <button onClick={() => handleOpenQuiz('individual')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Get Your Subsidy Estimate</button>
           </div>
         </section>
       )}
@@ -447,7 +453,7 @@ export default function Home() {
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Group Coverage for Your Business</h1>
             <p className="text-gray-700 text-lg mb-6">Offering health coverage attracts talent, is tax-deductible, and qualifies for significant government tax credits through the SHOP marketplace.</p>
-            <button onClick={() => setShowQuiz('group')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Calculate Your Tax Credits</button>
+            <button onClick={() => handleOpenQuiz('group')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Calculate Your Tax Credits</button>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
@@ -477,7 +483,7 @@ export default function Home() {
 
           <div className="bg-blue-100 border border-blue-300 rounded-lg p-8 text-center">
             <p className="text-gray-900 font-semibold mb-4 text-lg">See how much your business could save with federal tax credits.</p>
-            <button onClick={() => setShowQuiz('group')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Calculate Your Tax Credit Estimate</button>
+            <button onClick={() => handleOpenQuiz('group')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Calculate Your Tax Credit Estimate</button>
           </div>
         </section>
       )}
@@ -492,7 +498,7 @@ export default function Home() {
                 {showQuiz === 'individual' && 'Individual Plan Assessment'}
                 {showQuiz === 'group' && 'Group Plan Assessment'}
               </h3>
-              <button onClick={() => { setShowQuiz(null); setQuizResults(null); }} className="text-2xl text-gray-400">×</button>
+              <button onClick={() => { setShowQuiz(null); setQuizAnswers({}); setQuizResults(null); }} className="text-2xl text-gray-400">×</button>
             </div>
 
             {!quizResults ? (
@@ -509,7 +515,7 @@ export default function Home() {
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Phone</label>
                     <input type="tel" placeholder="(619) XXX-XXXX" onChange={(e) => handleQuizAnswer('phone', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Age?</label>
-                    <input type="number" placeholder="65" onChange={(e) => handleQuizAnswer('age', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="number" placeholder="65" value={quizAnswers.age || ''} onChange={(e) => handleQuizAnswer('age', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Currently employed?</label>
                     <div className="flex gap-3"><button onClick={() => handleQuizAnswer('employed', 'yes')} className={`px-4 py-2 rounded text-sm ${quizAnswers.employed === 'yes' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>Yes</button>
                     <button onClick={() => handleQuizAnswer('employed', 'no')} className={`px-4 py-2 rounded text-sm ${quizAnswers.employed === 'no' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>No</button></div></div>
@@ -618,7 +624,7 @@ export default function Home() {
                 ))}
                 <div className="flex gap-2 pt-4">
                   <button onClick={generatePDF} className="flex-1 px-4 py-2 bg-blue-600 text-white rounded font-bold text-sm">Download PDF</button>
-                  <button onClick={() => setQuizResults(null)} className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded text-sm">Start Over</button>
+                  <button onClick={() => { setQuizAnswers({}); setQuizResults(null); }} className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded text-sm">Start Over</button>
                 </div>
               </div>
             )}

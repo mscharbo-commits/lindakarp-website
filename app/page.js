@@ -579,7 +579,9 @@ export default function Home() {
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Phone</label>
                     <input type="tel" placeholder="(619) XXX-XXXX" onChange={(e) => handleQuizAnswer('phone', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Age?</label>
-                    <input type="number" placeholder="65" value={quizAnswers.age || ''} onChange={(e) => handleQuizAnswer('age', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="number" placeholder="65" value={quizAnswers.age || ''} onChange={(e) => handleQuizAnswer('age', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" />
+                    {quizAnswers.age && <p className="text-xs text-gray-500 mt-1">You entered: {quizAnswers.age}</p>}
+                    </div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Currently employed?</label>
                     <div className="flex gap-3"><button onClick={() => handleQuizAnswer('employed', 'yes')} className={`px-4 py-2 rounded text-sm ${quizAnswers.employed === 'yes' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>Yes</button>
                     <button onClick={() => handleQuizAnswer('employed', 'no')} className={`px-4 py-2 rounded text-sm ${quizAnswers.employed === 'no' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>No</button></div></div>

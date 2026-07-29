@@ -3,6 +3,9 @@ import { useState } from 'react'
 
 export default function Home() {
   const [activeMain, setActiveMain] = useState('home')
+  const [activeMedicare, setActiveMedicare] = useState('coverage')
+  const [activeIndividual, setActiveIndividual] = useState('overview')
+  const [activeGroup, setActiveGroup] = useState('overview')
   const [showQuiz, setShowQuiz] = useState(null)
   const [quizAnswers, setQuizAnswers] = useState({})
   const [quizResults, setQuizResults] = useState(null)
@@ -16,93 +19,176 @@ export default function Home() {
     const element = document.createElement('a')
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content))
     element.setAttribute('download', 'assessment.txt')
-    element.style.display = 'none'
     document.body.appendChild(element)
     element.click()
     document.body.removeChild(element)
   }
 
+  const incomeRanges = {
+    'under25': { label: 'Under $25,000', value: 20000 },
+    '25to50': { label: '$25,000 - $50,000', value: 37500 },
+    '50to75': { label: '$50,000 - $75,000', value: 62500 },
+    '75to100': { label: '$75,000 - $100,000', value: 87500 },
+    '100to150': { label: '$100,000 - $150,000', value: 125000 },
+    '150plus': { label: '$150,000+', value: 175000 }
+  }
+
   const calculateMedicareResults = () => {
+    const age = parseInt(quizAnswers.age) || 0
+    const employed = quizAnswers.employed === 'yes'
+    const income = incomeRanges[quizAnswers.income]?.value || 0
+    const conditions = quizAnswers.conditions === 'yes'
+    const medications = parseInt(quizAnswers.medications) || 0
+    const doctorPreference = quizAnswers.doctorPreference
+
+    let recommendations = []
+    let estimatedCosts = []
+
+    if (age >= 65) {
+      if (conditions || medications >= 3) {
+        recommendations.push('Medicare Advantage (Part C) - Covers prescriptions, often $0 premium')
+        estimatedCosts.push('$0-150/month + copays')
+      } else {
+        recommendations.push('Medicare Supplement Plan G - Most comprehensive gap coverage')
+        estimatedCosts.push('$140-300/month')
+      }
+      
+      if (medications > 0) {
+        recommendations.push('Part D Prescription Drug - Match to your specific medications')
+        estimatedCosts.push('$30-100/month')
+      }
+
+      recommendations.push('Review Enrollment Deadlines - Avoid lifetime penalties')
+      estimatedCosts.push('Critical: Act within 7 months of 65th birthday')
+    }
+
     setQuizResults({
-      recommendations: ['Plan G Medigap recommended', 'Part D for prescriptions'],
-      details: `Age: ${quizAnswers.age} | Income: ${quizAnswers.income}`
+      recommendations,
+      estimatedCosts,
+      details: `Age: ${age} | Employment: ${employed ? 'Working' : 'Retired'} | Income: ${quizAnswers.income ? incomeRanges[quizAnswers.income].label : 'Not specified'} | Chronic Conditions: ${conditions ? 'Yes' : 'No'} | # of Medications: ${medications} | Doctor Preference: ${doctorPreference || 'Not specified'}`
     })
   }
 
   const calculateIndividualResults = () => {
+    const income = incomeRanges[quizAnswers.ind_income]?.value || 0
+    const householdSize = parseInt(quizAnswers.ind_household) || 1
+    const employed = quizAnswers.ind_employed === 'yes'
+    const hasPreexisting = quizAnswers.ind_preexisting === 'yes'
+
+    let options = []
+    const fpl = householdSize * 14580
+    const incomePercent = (income / fpl) * 100
+
+    if (incomePercent <= 150) {
+      options.push('MAXIMUM subsidy eligibility - Likely covers most or all premium')
+      options.push('Estimated help: $400-600/month')
+    } else if (incomePercent <= 200) {
+      options.push('Substantial subsidies available')
+      options.push('Estimated help: $200-400/month')
+    } else if (incomePercent <= 400) {
+      options.push('Moderate subsidies may apply')
+      options.push('Estimated help: $50-200/month')
+    } else {
+      options.push('Limited/no subsidies available')
+      options.push('Full price: $300-700/month')
+    }
+
     setQuizResults({
-      recommendations: ['You likely qualify for subsidies', 'Visit CoveredCA.com to apply'],
-      details: `Household: ${quizAnswers.ind_household} | Income: ${quizAnswers.ind_income}`
+      recommendations: options,
+      estimatedCosts: ['Visit CoveredCA.com to apply'],
+      details: `Annual Income: ${quizAnswers.ind_income ? incomeRanges[quizAnswers.ind_income].label : 'Not specified'} | Household Size: ${householdSize} | Currently Employed: ${employed ? 'Yes' : 'No'} | Pre-existing Conditions: ${hasPreexisting ? 'Yes' : 'No'}`
     })
   }
 
   const calculateGroupResults = () => {
+    const employees = parseInt(quizAnswers.group_employees) || 0
+    const avgSalary = parseInt(quizAnswers.group_salary) || 50000
+    const budget = parseInt(quizAnswers.group_budget) || 0
+
+    let options = []
+    let taxCredit = 0
+
+    if (employees >= 2 && employees <= 50) {
+      const credit = Math.min((employees * 7980 * 0.5) / 12, employees * budget)
+      taxCredit = credit
+      options.push(`SHOP Marketplace Eligible - Est. Monthly Tax Credit: $${Math.round(credit)}`)
+      options.push(`Your Employer Contribution: $${Math.round(budget * employees - credit)}/month`)
+    }
+
+    options.push(`Total Employee Cost Share: $${Math.round(budget * 0.3 * employees)}/month (approx 30%)`)
+
     setQuizResults({
-      recommendations: ['SHOP marketplace eligible', 'Estimated tax credit: $500-2000/month'],
-      details: `Employees: ${quizAnswers.group_employees}`
+      recommendations: options,
+      estimatedCosts: [`Tax Credit: $${Math.round(taxCredit)}/month`, `Total Premium Range: $${Math.round(budget * employees)}-${Math.round(budget * employees * 1.2)}/month`],
+      details: `Employees: ${employees} | Average Salary: $${avgSalary}k | Budget/Employee/Month: $${budget}`
     })
   }
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Compact Header */}
-      <header className="border-b border-gray-200 sticky top-0 z-30 bg-white">
+      {/* Header */}
+      <header className="border-b border-gray-300 sticky top-0 z-30 bg-white">
         <div className="max-w-5xl mx-auto px-6 py-3 flex justify-between items-center">
-          <button onClick={() => setActiveMain('home')} className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-300 to-blue-500 rounded-full"></div>
-            <span className="font-semibold text-sm text-gray-900">Linda Karp</span>
+          <button onClick={() => setActiveMain('home')} className="flex items-center gap-3">
+            <svg className="w-10 h-10" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="35" cy="35" r="25" fill="none" stroke="#8db3d8" strokeWidth="4"/>
+              <circle cx="65" cy="35" r="25" fill="none" stroke="#5b8fc7" strokeWidth="4"/>
+              <circle cx="50" cy="55" r="25" fill="none" stroke="#4a6fa5" strokeWidth="4"/>
+            </svg>
+            <div>
+              <p className="font-semibold text-sm text-gray-900">Linda Karp</p>
+              <p className="text-xs text-gray-500">Insurance Services</p>
+            </div>
           </button>
           <nav className="flex gap-6 items-center text-xs">
-            <button onClick={() => setActiveMain('medicare')} className="text-gray-700 hover:text-blue-600">Medicare</button>
-            <button onClick={() => setActiveMain('individual')} className="text-gray-700 hover:text-blue-600">Individual</button>
-            <button onClick={() => setActiveMain('group')} className="text-gray-700 hover:text-blue-600">Group</button>
-            <a href="tel:6194392110" className="px-4 py-1.5 bg-blue-600 text-white rounded text-xs font-semibold hover:bg-blue-700">(619) 439-2110</a>
+            <button onClick={() => setActiveMain('medicare')} className="text-gray-700 hover:text-blue-600 font-medium">Medicare</button>
+            <button onClick={() => setActiveMain('individual')} className="text-gray-700 hover:text-blue-600 font-medium">Individual</button>
+            <button onClick={() => setActiveMain('group')} className="text-gray-700 hover:text-blue-600 font-medium">Group</button>
+            <a href="tel:6194392110" className="px-4 py-2 bg-blue-600 text-white rounded text-xs font-semibold hover:bg-blue-700">(619) 439-2110</a>
           </nav>
         </div>
       </header>
 
       {activeMain === 'home' && (
         <div>
-          {/* Compact Hero - Info First */}
+          {/* Hero */}
           <section className="max-w-5xl mx-auto px-6 py-8">
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-3">Health insurance simplified</h1>
+                <h1 className="text-3xl font-bold text-gray-900 mb-3">Health insurance you can trust</h1>
                 <p className="text-gray-700 text-sm mb-4 leading-relaxed">28 years helping Californians navigate Medicare, individual, and group coverage. Honest guidance. No pressure.</p>
                 
-                <div className="bg-blue-50 rounded-lg p-4 mb-6 text-sm">
+                <div className="bg-blue-50 rounded-lg p-4 mb-6 text-sm border border-blue-200">
                   <p className="font-semibold text-gray-900 mb-2">Why choose Linda Karp?</p>
                   <ul className="space-y-1 text-gray-700 text-xs">
                     <li>✓ 28+ years in the field</li>
                     <li>✓ Honest, caring advice</li>
                     <li>✓ Covers all three areas (Medicare, Individual, Group)</li>
                     <li>✓ Help with subsidy optimization</li>
+                    <li>✓ 5.0★ client reviews</li>
                   </ul>
                 </div>
 
-                <div className="flex gap-2 mb-6">
-                  <button onClick={() => setShowQuiz('medicare')} className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-semibold hover:bg-blue-700">Medicare Assessment</button>
-                  <button onClick={() => setShowQuiz('individual')} className="px-4 py-2 border border-blue-600 text-blue-600 rounded text-sm font-semibold hover:bg-blue-50">Check Subsidy</button>
+                <div className="flex gap-2 mb-6 flex-wrap">
+                  <button onClick={() => setShowQuiz('medicare')} className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-semibold hover:bg-blue-700">Medicare Quiz</button>
+                  <button onClick={() => setShowQuiz('individual')} className="px-4 py-2 border border-blue-600 text-blue-600 rounded text-sm font-semibold hover:bg-blue-50">Individual Quiz</button>
+                  <button onClick={() => setShowQuiz('group')} className="px-4 py-2 border border-gray-300 text-gray-700 rounded text-sm font-semibold hover:bg-gray-50">Group Quiz</button>
                 </div>
 
                 <p className="text-xs text-gray-500">La Mesa, CA • (619) 439-2110 • info@lindakarp.com</p>
               </div>
 
-              {/* Reviews / Social Proof */}
               <div className="space-y-3">
                 <p className="text-sm font-semibold text-gray-900">What clients say:</p>
-                
-                <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 rounded-lg border border-yellow-200">
+                <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                   <p className="text-xs font-semibold text-gray-900 mb-1">⭐⭐⭐⭐⭐ "Linda is a life saver"</p>
                   <p className="text-xs text-gray-700">"I was laid off and Linda helped me and a group of us get coverage. Intelligent, efficient, caring."</p>
                 </div>
-
-                <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
+                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                   <p className="text-xs font-semibold text-gray-900 mb-1">⭐⭐⭐⭐⭐ "Huge help"</p>
-                  <p className="text-xs text-gray-700">"After years of picking insurance at work, shopping the exchange was overwhelming. Linda made it simple."</p>
+                  <p className="text-xs text-gray-700">"After years of picking at work, shopping CoveredCA was overwhelming. Linda made it simple."</p>
                 </div>
-
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                   <p className="text-xs font-semibold text-gray-900 mb-1">⭐⭐⭐⭐⭐ "Simply amazing"</p>
                   <p className="text-xs text-gray-700">"Honest, helpful, and genuinely cares about finding the right coverage for you."</p>
                 </div>
@@ -110,7 +196,7 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Quick Facts */}
+          {/* Stats */}
           <section className="max-w-5xl mx-auto px-6 py-8 border-t border-gray-200">
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-gray-50 p-4 rounded-lg">
@@ -128,20 +214,22 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Three Simple Options */}
+          {/* Three Options */}
           <section className="max-w-5xl mx-auto px-6 py-8 border-t border-gray-200">
             <p className="font-semibold text-gray-900 mb-4">I can help with:</p>
             <div className="grid md:grid-cols-3 gap-4">
-              {[
-                {title: 'Medicare', desc: 'Turning 65? Navigate Medigap, Advantage, Part D.', action: () => setActiveMain('medicare')},
-                {title: 'Individual', desc: 'CoveredCA coverage with subsidy optimization.', action: () => setActiveMain('individual')},
-                {title: 'Group', desc: 'Offer coverage to your team. SHOP marketplace.', action: () => setActiveMain('group')}
-              ].map((item, i) => (
-                <button key={i} onClick={item.action} className="text-left border border-gray-200 rounded p-4 hover:border-blue-600 hover:bg-blue-50 transition">
-                  <p className="font-semibold text-gray-900 text-sm mb-1">{item.title}</p>
-                  <p className="text-xs text-gray-600">{item.desc}</p>
-                </button>
-              ))}
+              <button onClick={() => setActiveMain('medicare')} className="text-left border border-gray-200 rounded p-4 hover:border-blue-600 hover:bg-blue-50 transition">
+                <p className="font-semibold text-gray-900 text-sm mb-1">🏥 Medicare</p>
+                <p className="text-xs text-gray-600">Turning 65? Navigate Medigap, Advantage, Part D.</p>
+              </button>
+              <button onClick={() => setActiveMain('individual')} className="text-left border border-gray-200 rounded p-4 hover:border-blue-600 hover:bg-blue-50 transition">
+                <p className="font-semibold text-gray-900 text-sm mb-1">👨‍👩‍👧 Individual</p>
+                <p className="text-xs text-gray-600">CoveredCA coverage with subsidy optimization.</p>
+              </button>
+              <button onClick={() => setActiveMain('group')} className="text-left border border-gray-200 rounded p-4 hover:border-blue-600 hover:bg-blue-50 transition">
+                <p className="font-semibold text-gray-900 text-sm mb-1">🏢 Group</p>
+                <p className="text-xs text-gray-600">Offer coverage to your team. SHOP marketplace.</p>
+              </button>
             </div>
           </section>
         </div>
@@ -167,26 +255,14 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-4 gap-2 mb-6 text-center">
-            <div className="bg-blue-50 p-3 rounded">
-              <p className="text-xs text-gray-600">Part A Ded.</p>
-              <p className="font-bold text-gray-900">$1,780</p>
-            </div>
-            <div className="bg-green-50 p-3 rounded">
-              <p className="text-xs text-gray-600">Part B Ded.</p>
-              <p className="font-bold text-gray-900">$280</p>
-            </div>
-            <div className="bg-purple-50 p-3 rounded">
-              <p className="text-xs text-gray-600">Medigap G</p>
-              <p className="font-bold text-gray-900">$140-300</p>
-            </div>
-            <div className="bg-amber-50 p-3 rounded">
-              <p className="text-xs text-gray-600">Part D Rx</p>
-              <p className="font-bold text-gray-900">$30-100</p>
-            </div>
+            <div className="bg-blue-50 p-3 rounded"><p className="text-xs text-gray-600">Part A</p><p className="font-bold text-gray-900 text-sm">$1,780</p></div>
+            <div className="bg-green-50 p-3 rounded"><p className="text-xs text-gray-600">Part B</p><p className="font-bold text-gray-900 text-sm">$280</p></div>
+            <div className="bg-purple-50 p-3 rounded"><p className="text-xs text-gray-600">Medigap G</p><p className="font-bold text-gray-900 text-sm">$140-300</p></div>
+            <div className="bg-amber-50 p-3 rounded"><p className="text-xs text-gray-600">Part D Rx</p><p className="font-bold text-gray-900 text-sm">$30-100</p></div>
           </div>
 
           <div className="bg-orange-50 border border-orange-300 rounded p-3 text-xs text-gray-700 mb-6">
-            <strong>⚠️ Timing matters:</strong> Enroll within 7 months of turning 65 (3 before, during, 3 after). Late penalties are permanent.
+            <strong>⚠️ Critical:</strong> Enroll within 7 months of turning 65. Late penalties are permanent.
           </div>
 
           <button onClick={() => setShowQuiz('medicare')} className="w-full px-4 py-2 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 text-sm">Get My Medicare Recommendation</button>
@@ -200,22 +276,18 @@ export default function Home() {
           <p className="text-sm text-gray-700 mb-6">Coverage through CoveredCA. Many people qualify for government subsidies based on income.</p>
 
           <div className="space-y-3 mb-6">
-            <div className="bg-blue-50 rounded p-3">
+            <div className="bg-blue-50 rounded p-3 border border-blue-200">
               <p className="font-semibold text-gray-900 text-sm mb-1">No exclusions for pre-existing conditions</p>
               <p className="text-xs text-gray-600">Everyone accepted. Always covered.</p>
             </div>
-            <div className="bg-green-50 rounded p-3">
+            <div className="bg-green-50 rounded p-3 border border-green-200">
               <p className="font-semibold text-gray-900 text-sm mb-1">Tax credits based on income</p>
               <p className="text-xs text-gray-600">Individual max: $37k | Family of 4: $76k for full subsidy</p>
             </div>
-            <div className="bg-purple-50 rounded p-3">
-              <p className="font-semibold text-gray-900 text-sm mb-1">4 plan types</p>
-              <p className="text-xs text-gray-600">Bronze (60%) to Platinum (90%). Pick your coverage level.</p>
+            <div className="bg-purple-50 rounded p-3 border border-purple-200">
+              <p className="font-semibold text-gray-900 text-sm mb-1">4 plan types: Bronze (60%) to Platinum (90%)</p>
+              <p className="text-xs text-gray-600">Pick your coverage level and monthly cost.</p>
             </div>
-          </div>
-
-          <div className="bg-gray-50 rounded p-3 text-xs text-gray-700 mb-6">
-            Report income changes within 30 days. Mismatches can mean repaying subsidies at tax time.
           </div>
 
           <button onClick={() => setShowQuiz('individual')} className="w-full px-4 py-2 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 text-sm">Check Your Subsidy Eligibility</button>
@@ -229,15 +301,15 @@ export default function Home() {
           <p className="text-sm text-gray-700 mb-6">Offering health coverage attracts talent, is tax-deductible, and qualifies for government tax credits.</p>
 
           <div className="space-y-3 mb-6">
-            <div className="bg-blue-50 rounded p-3">
+            <div className="bg-blue-50 rounded p-3 border border-blue-200">
               <p className="font-semibold text-gray-900 text-sm mb-1">SHOP Marketplace</p>
               <p className="text-xs text-gray-600">2-50 employees eligible. Up to 50% federal tax credit. Guaranteed coverage.</p>
             </div>
-            <div className="bg-green-50 rounded p-3">
-              <p className="font-semibold text-gray-900 text-sm mb-1">Costs</p>
-              <p className="text-xs text-gray-600">$350-800/employee/month. You typically pay 50-75% (tax-deductible).</p>
+            <div className="bg-green-50 rounded p-3 border border-green-200">
+              <p className="font-semibold text-gray-900 text-sm mb-1">Costs: $350-800/employee/month</p>
+              <p className="text-xs text-gray-600">You typically pay 50-75% (tax-deductible).</p>
             </div>
-            <div className="bg-purple-50 rounded p-3">
+            <div className="bg-purple-50 rounded p-3 border border-purple-200">
               <p className="font-semibold text-gray-900 text-sm mb-1">Employee choice</p>
               <p className="text-xs text-gray-600">Employees pick their plan within your contribution level.</p>
             </div>
@@ -249,58 +321,113 @@ export default function Home() {
 
       {/* Quiz Modal */}
       {showQuiz && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-gray-900">Quick Assessment</h3>
-              <button onClick={() => { setShowQuiz(null); setQuizResults(null); }} className="text-xl text-gray-400">×</button>
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-2xl w-full p-6 my-8">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-gray-900">
+                {showQuiz === 'medicare' && 'Medicare Assessment'}
+                {showQuiz === 'individual' && 'Individual Plan Assessment'}
+                {showQuiz === 'group' && 'Group Plan Assessment'}
+              </h3>
+              <button onClick={() => { setShowQuiz(null); setQuizResults(null); }} className="text-2xl text-gray-400">×</button>
             </div>
 
             {!quizResults ? (
-              <div className="space-y-3">
+              <div className="space-y-4 max-h-[60vh] overflow-y-auto">
                 {showQuiz === 'medicare' && (
                   <>
-                    <input type="number" placeholder="Age" onChange={(e) => handleQuizAnswer('age', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded text-sm" />
-                    <select onChange={(e) => handleQuizAnswer('income', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded text-sm">
-                      <option value="">Income</option>
-                      <option value="under25">Under $25k</option>
-                      <option value="25to50">$25k-$50k</option>
-                    </select>
-                    <button onClick={calculateMedicareResults} className="w-full px-4 py-2 bg-blue-600 text-white rounded font-bold text-sm">Get Recommendation</button>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Age?</label>
+                    <input type="number" placeholder="65" onChange={(e) => handleQuizAnswer('age', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Currently employed?</label>
+                    <div className="flex gap-3"><button onClick={() => handleQuizAnswer('employed', 'yes')} className={`px-4 py-2 rounded text-sm ${quizAnswers.employed === 'yes' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>Yes</button>
+                    <button onClick={() => handleQuizAnswer('employed', 'no')} className={`px-4 py-2 rounded text-sm ${quizAnswers.employed === 'no' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>No</button></div></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Household income?</label>
+                    <select onChange={(e) => handleQuizAnswer('income', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
+                      <option value="">Select...</option>
+                      <option value="under25">Under $25,000</option>
+                      <option value="25to50">$25,000 - $50,000</option>
+                      <option value="50to75">$50,000 - $75,000</option>
+                      <option value="75to100">$75,000 - $100,000</option>
+                      <option value="100to150">$100,000 - $150,000</option>
+                      <option value="150plus">$150,000+</option>
+                    </select></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Chronic health conditions?</label>
+                    <div className="flex gap-3"><button onClick={() => handleQuizAnswer('conditions', 'yes')} className={`px-4 py-2 rounded text-sm ${quizAnswers.conditions === 'yes' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>Yes</button>
+                    <button onClick={() => handleQuizAnswer('conditions', 'no')} className={`px-4 py-2 rounded text-sm ${quizAnswers.conditions === 'no' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>No</button></div></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Regular medications?</label>
+                    <select onChange={(e) => handleQuizAnswer('medications', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
+                      <option value="">Select...</option>
+                      <option value="0">None</option>
+                      <option value="1">1-2</option>
+                      <option value="3">3-5</option>
+                      <option value="6">6+</option>
+                    </select></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Doctor preference?</label>
+                    <select onChange={(e) => handleQuizAnswer('doctorPreference', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
+                      <option value="">Select...</option>
+                      <option value="any">See any doctor</option>
+                      <option value="network">Network OK</option>
+                      <option value="specific">Must see specific doctors</option>
+                    </select></div>
+                    <button onClick={calculateMedicareResults} className="w-full px-6 py-3 bg-blue-600 text-white rounded font-bold hover:bg-blue-700 text-sm">Generate Report</button>
                   </>
                 )}
+
                 {showQuiz === 'individual' && (
                   <>
-                    <select onChange={(e) => handleQuizAnswer('ind_household', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded text-sm">
-                      <option value="">Household Size</option>
-                      <option value="1">1</option>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Household income?</label>
+                    <select onChange={(e) => handleQuizAnswer('ind_income', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
+                      <option value="">Select...</option>
+                      <option value="under25">Under $25,000</option>
+                      <option value="25to50">$25,000 - $50,000</option>
+                      <option value="50to75">$50,000 - $75,000</option>
+                      <option value="75to100">$75,000 - $100,000</option>
+                      <option value="100to150">$100,000 - $150,000</option>
+                      <option value="150plus">$150,000+</option>
+                    </select></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Household size?</label>
+                    <select onChange={(e) => handleQuizAnswer('ind_household', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
+                      <option value="">Select...</option>
+                      <option value="1">1 (just me)</option>
                       <option value="2">2</option>
                       <option value="3">3</option>
-                    </select>
-                    <select onChange={(e) => handleQuizAnswer('ind_income', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded text-sm">
-                      <option value="">Income</option>
-                      <option value="under25">Under $25k</option>
-                      <option value="25to50">$25k-$50k</option>
-                    </select>
-                    <button onClick={calculateIndividualResults} className="w-full px-4 py-2 bg-blue-600 text-white rounded font-bold text-sm">Check Eligibility</button>
+                      <option value="4">4</option>
+                      <option value="5">5+</option>
+                    </select></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Currently employed?</label>
+                    <div className="flex gap-3"><button onClick={() => handleQuizAnswer('ind_employed', 'yes')} className={`px-4 py-2 rounded text-sm ${quizAnswers.ind_employed === 'yes' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>Yes</button>
+                    <button onClick={() => handleQuizAnswer('ind_employed', 'no')} className={`px-4 py-2 rounded text-sm ${quizAnswers.ind_employed === 'no' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>No</button></div></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Pre-existing conditions?</label>
+                    <div className="flex gap-3"><button onClick={() => handleQuizAnswer('ind_preexisting', 'yes')} className={`px-4 py-2 rounded text-sm ${quizAnswers.ind_preexisting === 'yes' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>Yes</button>
+                    <button onClick={() => handleQuizAnswer('ind_preexisting', 'no')} className={`px-4 py-2 rounded text-sm ${quizAnswers.ind_preexisting === 'no' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>No</button></div></div>
+                    <button onClick={calculateIndividualResults} className="w-full px-6 py-3 bg-blue-600 text-white rounded font-bold hover:bg-blue-700 text-sm">See Subsidy Eligibility</button>
                   </>
                 )}
+
                 {showQuiz === 'group' && (
                   <>
-                    <input type="number" placeholder="# Employees" onChange={(e) => handleQuizAnswer('group_employees', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded text-sm" />
-                    <button onClick={calculateGroupResults} className="w-full px-4 py-2 bg-blue-600 text-white rounded font-bold text-sm">Calculate</button>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Number of employees?</label>
+                    <input type="number" placeholder="25" onChange={(e) => handleQuizAnswer('group_employees', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Average employee salary?</label>
+                    <input type="number" placeholder="50000" onChange={(e) => handleQuizAnswer('group_salary', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Budget per employee/month?</label>
+                    <input type="number" placeholder="350" onChange={(e) => handleQuizAnswer('group_budget', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <button onClick={calculateGroupResults} className="w-full px-6 py-3 bg-blue-600 text-white rounded font-bold hover:bg-blue-700 text-sm">Calculate Tax Credits</button>
                   </>
                 )}
               </div>
             ) : (
-              <div className="space-y-3">
-                <p className="text-xs text-gray-600 bg-gray-50 p-2 rounded">{quizResults.details}</p>
+              <div className="space-y-4">
+                <div className="bg-gray-100 p-4 rounded text-xs text-gray-700">{quizResults.details}</div>
                 {quizResults.recommendations.map((r, i) => (
-                  <div key={i} className="text-xs text-gray-700 bg-blue-50 p-2 rounded">{r}</div>
+                  <div key={i} className="bg-blue-50 border border-blue-200 p-4 rounded">
+                    <p className="font-semibold text-gray-900 text-sm">{r}</p>
+                    <p className="text-xs text-gray-600 mt-1">{quizResults.estimatedCosts[i]}</p>
+                  </div>
                 ))}
-                <div className="flex gap-2 pt-2">
-                  <button onClick={generatePDF} className="flex-1 px-3 py-2 bg-blue-600 text-white rounded text-xs font-bold">Download</button>
-                  <button onClick={() => setQuizResults(null)} className="flex-1 px-3 py-2 border border-gray-300 rounded text-xs">Back</button>
+                <div className="flex gap-2 pt-4">
+                  <button onClick={generatePDF} className="flex-1 px-4 py-2 bg-blue-600 text-white rounded font-bold text-sm">Download PDF</button>
+                  <button onClick={() => setQuizResults(null)} className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded text-sm">Start Over</button>
                 </div>
               </div>
             )}
@@ -310,24 +437,9 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-6 px-6 mt-12">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-6 text-sm mb-6">
-            <div>
-              <p className="font-bold">Linda Karp Insurance</p>
-              <p className="text-gray-400 text-xs mt-1">28+ years of honest guidance</p>
-            </div>
-            <div>
-              <p className="font-bold mb-2">Services</p>
-              <p className="text-gray-400 text-xs">Medicare • Individual • Group</p>
-            </div>
-            <div>
-              <p className="font-bold">(619) 439-2110</p>
-              <p className="text-gray-400 text-xs mt-1">La Mesa, CA</p>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 pt-6 text-center text-gray-500 text-xs">
-            © 2026 Linda Karp Insurance Services
-          </div>
+        <div className="max-w-5xl mx-auto text-center text-xs text-gray-400">
+          <p className="mb-2">Linda Karp Insurance • La Mesa, CA • (619) 439-2110</p>
+          <p>© 2026 Linda Karp Insurance Services</p>
         </div>
       </footer>
     </div>

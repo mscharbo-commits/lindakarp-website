@@ -368,8 +368,11 @@ export default function Home() {
             <p className="font-semibold text-gray-900 mb-6 text-lg">I can help with:</p>
             <div className="grid md:grid-cols-3 gap-6">
               <button onClick={() => setActiveMain('medicare')} className="text-left rounded-lg overflow-hidden shadow hover:shadow-lg transition bg-white border border-gray-200">
-                <div className="h-40 overflow-hidden bg-gray-100">
+                <div className="h-40 overflow-hidden bg-gray-100 relative">
                   <img src="/medicare-older-adults.png" alt="Medicare" className="w-full h-full object-cover"/>
+                  <div className="absolute inset-0 bg-black/40 flex items-end justify-start p-4">
+                    <p className="text-white font-bold text-lg">Ready to Tackle Medicare? We'll Guide You</p>
+                  </div>
                 </div>
                 <div className="p-4">
                   <p className="font-semibold text-gray-900 text-lg mb-2">Medicare</p>
@@ -430,8 +433,11 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
-            <div className="rounded-lg overflow-hidden shadow-lg">
+            <div className="rounded-lg overflow-hidden shadow-lg relative">
               <img src="/medicare-older-adults.png" alt="Medicare planning" className="w-full h-80 object-cover"/>
+              <div className="absolute inset-0 bg-black/40 flex items-end justify-start p-6">
+                <p className="text-white font-bold text-2xl">Ready to Tackle Medicare? We'll Guide You</p>
+              </div>
             </div>
             
             <div className="space-y-4">

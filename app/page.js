@@ -174,7 +174,7 @@ export default function Home() {
             <div className="grid md:grid-cols-3 gap-6">
               <button onClick={() => setActiveMain('medicare')} className="text-left rounded-lg overflow-hidden shadow hover:shadow-lg transition bg-white border border-gray-200">
                 <div className="h-40 overflow-hidden bg-gray-100">
-                  <img src="https://images.unsplash.com/photo-1631217b88dfc5c7a8c4b4d4b5b6b4d5?w=600&h=300&fit=crop" alt="Medicare" className="w-full h-full object-cover"/>
+                  <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=300&fit=crop" alt="Medicare" className="w-full h-full object-cover"/>
                 </div>
                 <div className="p-4">
                   <p className="font-semibold text-gray-900 text-lg mb-2">Medicare</p>
@@ -227,7 +227,7 @@ export default function Home() {
       {activeMain === 'medicare' && (
         <section className="max-w-3xl mx-auto px-6 py-8">
           <div className="rounded-lg overflow-hidden shadow-lg mb-6">
-            <img src="https://images.unsplash.com/photo-1631217b88dfc5c7a8c4b4d4b5b6b4d5?w=800&h=400&fit=crop" alt="Medicare planning" className="w-full h-64 object-cover"/>
+            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=400&fit=crop" alt="Medicare planning" className="w-full h-64 object-cover"/>
           </div>
           
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Medicare Planning</h2>

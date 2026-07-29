@@ -1,11 +1,9 @@
 'use client'
 import { useState } from 'react'
+import Image from 'next/image'
 
 export default function Home() {
   const [activeMain, setActiveMain] = useState('home')
-  const [activeMedicare, setActiveMedicare] = useState('coverage')
-  const [activeIndividual, setActiveIndividual] = useState('overview')
-  const [activeGroup, setActiveGroup] = useState('overview')
   const [showQuiz, setShowQuiz] = useState(null)
   const [quizAnswers, setQuizAnswers] = useState({})
   const [quizResults, setQuizResults] = useState(null)
@@ -39,7 +37,6 @@ export default function Home() {
     const income = incomeRanges[quizAnswers.income]?.value || 0
     const conditions = quizAnswers.conditions === 'yes'
     const medications = parseInt(quizAnswers.medications) || 0
-    const doctorPreference = quizAnswers.doctorPreference
 
     let recommendations = []
     let estimatedCosts = []
@@ -65,15 +62,13 @@ export default function Home() {
     setQuizResults({
       recommendations,
       estimatedCosts,
-      details: `Age: ${age} | Employment: ${employed ? 'Working' : 'Retired'} | Income: ${quizAnswers.income ? incomeRanges[quizAnswers.income].label : 'Not specified'} | Chronic Conditions: ${conditions ? 'Yes' : 'No'} | # of Medications: ${medications} | Doctor Preference: ${doctorPreference || 'Not specified'}`
+      details: `Age: ${age} | Employment: ${employed ? 'Working' : 'Retired'} | Income: ${quizAnswers.income ? incomeRanges[quizAnswers.income].label : 'Not specified'} | Chronic Conditions: ${conditions ? 'Yes' : 'No'} | # of Medications: ${medications}`
     })
   }
 
   const calculateIndividualResults = () => {
     const income = incomeRanges[quizAnswers.ind_income]?.value || 0
     const householdSize = parseInt(quizAnswers.ind_household) || 1
-    const employed = quizAnswers.ind_employed === 'yes'
-    const hasPreexisting = quizAnswers.ind_preexisting === 'yes'
 
     let options = []
     const fpl = householdSize * 14580
@@ -96,13 +91,12 @@ export default function Home() {
     setQuizResults({
       recommendations: options,
       estimatedCosts: ['Visit CoveredCA.com to apply'],
-      details: `Annual Income: ${quizAnswers.ind_income ? incomeRanges[quizAnswers.ind_income].label : 'Not specified'} | Household Size: ${householdSize} | Currently Employed: ${employed ? 'Yes' : 'No'} | Pre-existing Conditions: ${hasPreexisting ? 'Yes' : 'No'}`
+      details: `Annual Income: ${quizAnswers.ind_income ? incomeRanges[quizAnswers.ind_income].label : 'Not specified'} | Household Size: ${householdSize}`
     })
   }
 
   const calculateGroupResults = () => {
     const employees = parseInt(quizAnswers.group_employees) || 0
-    const avgSalary = parseInt(quizAnswers.group_salary) || 50000
     const budget = parseInt(quizAnswers.group_budget) || 0
 
     let options = []
@@ -120,7 +114,7 @@ export default function Home() {
     setQuizResults({
       recommendations: options,
       estimatedCosts: [`Tax Credit: $${Math.round(taxCredit)}/month`, `Total Premium Range: $${Math.round(budget * employees)}-${Math.round(budget * employees * 1.2)}/month`],
-      details: `Employees: ${employees} | Average Salary: $${avgSalary}k | Budget/Employee/Month: $${budget}`
+      details: `Employees: ${employees} | Budget/Employee/Month: $${budget}`
     })
   }
 
@@ -129,15 +123,17 @@ export default function Home() {
       {/* Header */}
       <header className="border-b border-gray-300 sticky top-0 z-30 bg-white">
         <div className="max-w-5xl mx-auto px-6 py-3 flex justify-between items-center">
-          <button onClick={() => setActiveMain('home')} className="flex items-center gap-3">
-            <svg className="w-10 h-10" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="35" cy="35" r="25" fill="none" stroke="#8db3d8" strokeWidth="4"/>
-              <circle cx="65" cy="35" r="25" fill="none" stroke="#5b8fc7" strokeWidth="4"/>
-              <circle cx="50" cy="55" r="25" fill="none" stroke="#4a6fa5" strokeWidth="4"/>
-            </svg>
-            <div>
+          <button onClick={() => setActiveMain('home')} className="flex items-center gap-2">
+            <div className="w-10 h-10 flex items-center justify-center">
+              <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
+                <circle cx="35" cy="35" r="22" fill="none" stroke="#8db3d8" strokeWidth="3"/>
+                <circle cx="65" cy="35" r="22" fill="none" stroke="#5b8fc7" strokeWidth="3"/>
+                <circle cx="50" cy="58" r="22" fill="none" stroke="#4a6fa5" strokeWidth="3"/>
+              </svg>
+            </div>
+            <div className="text-left">
               <p className="font-semibold text-sm text-gray-900">Linda Karp</p>
-              <p className="text-xs text-gray-500">Insurance Services</p>
+              <p className="text-xs text-gray-600">Insurance</p>
             </div>
           </button>
           <nav className="flex gap-6 items-center text-xs">
@@ -151,85 +147,68 @@ export default function Home() {
 
       {activeMain === 'home' && (
         <div>
-          {/* Hero */}
-          <section className="max-w-5xl mx-auto px-6 py-8">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-3">Health insurance you can trust</h1>
-                <p className="text-gray-700 text-sm mb-4 leading-relaxed">28 years helping Californians navigate Medicare, individual, and group coverage. Honest guidance. No pressure.</p>
-                
-                <div className="bg-blue-50 rounded-lg p-4 mb-6 text-sm border border-blue-200">
-                  <p className="font-semibold text-gray-900 mb-2">Why choose Linda Karp?</p>
-                  <ul className="space-y-1 text-gray-700 text-xs">
-                    <li>✓ 28+ years in the field</li>
-                    <li>✓ Honest, caring advice</li>
-                    <li>✓ Covers all three areas (Medicare, Individual, Group)</li>
-                    <li>✓ Help with subsidy optimization</li>
-                    <li>✓ 5.0★ client reviews</li>
-                  </ul>
-                </div>
+          {/* Warm Hero with Image */}
+          <section className="bg-gradient-to-r from-blue-50 to-blue-100">
+            <div className="max-w-5xl mx-auto px-6 py-12">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <h1 className="text-4xl font-bold text-gray-900 mb-4">Health insurance you can trust</h1>
+                  <p className="text-gray-700 mb-6 leading-relaxed">28 years helping Californians navigate Medicare, individual, and group coverage. Honest guidance. No pressure.</p>
+                  
+                  <div className="flex gap-2 mb-6 flex-wrap">
+                    <button onClick={() => setShowQuiz('medicare')} className="px-6 py-3 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700">Medicare</button>
+                    <button onClick={() => setShowQuiz('individual')} className="px-6 py-3 border-2 border-blue-600 text-blue-600 rounded font-semibold hover:bg-blue-50">Individual</button>
+                    <button onClick={() => setShowQuiz('group')} className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded font-semibold hover:bg-gray-50">Group</button>
+                  </div>
 
-                <div className="flex gap-2 mb-6 flex-wrap">
-                  <button onClick={() => setShowQuiz('medicare')} className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-semibold hover:bg-blue-700">Medicare Quiz</button>
-                  <button onClick={() => setShowQuiz('individual')} className="px-4 py-2 border border-blue-600 text-blue-600 rounded text-sm font-semibold hover:bg-blue-50">Individual Quiz</button>
-                  <button onClick={() => setShowQuiz('group')} className="px-4 py-2 border border-gray-300 text-gray-700 rounded text-sm font-semibold hover:bg-gray-50">Group Quiz</button>
+                  <p className="text-sm text-gray-600">La Mesa, CA • (619) 439-2110</p>
                 </div>
-
-                <p className="text-xs text-gray-500">La Mesa, CA • (619) 439-2110 • info@lindakarp.com</p>
-              </div>
-
-              <div className="space-y-3">
-                <p className="text-sm font-semibold text-gray-900">What clients say:</p>
-                <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                  <p className="text-xs font-semibold text-gray-900 mb-1">⭐⭐⭐⭐⭐ "Linda is a life saver"</p>
-                  <p className="text-xs text-gray-700">"I was laid off and Linda helped me and a group of us get coverage. Intelligent, efficient, caring."</p>
-                </div>
-                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                  <p className="text-xs font-semibold text-gray-900 mb-1">⭐⭐⭐⭐⭐ "Huge help"</p>
-                  <p className="text-xs text-gray-700">"After years of picking at work, shopping CoveredCA was overwhelming. Linda made it simple."</p>
-                </div>
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <p className="text-xs font-semibold text-gray-900 mb-1">⭐⭐⭐⭐⭐ "Simply amazing"</p>
-                  <p className="text-xs text-gray-700">"Honest, helpful, and genuinely cares about finding the right coverage for you."</p>
+                <div className="rounded-lg overflow-hidden shadow-lg">
+                  <img src="http://www.lindakarp.com/uploads/5/7/9/6/57968355/919447_orig.jpg" alt="Linda Karp" className="w-full h-80 object-cover"/>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* Stats */}
-          <section className="max-w-5xl mx-auto px-6 py-8 border-t border-gray-200">
+          {/* Three Categories with Images */}
+          <section className="max-w-5xl mx-auto px-6 py-12">
+            <p className="font-semibold text-gray-900 mb-6 text-lg">I can help with:</p>
             <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="font-bold text-2xl text-blue-600 mb-1">28+</p>
-                <p className="text-sm text-gray-700">Years in insurance</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="font-bold text-2xl text-blue-600 mb-1">5.0★</p>
-                <p className="text-sm text-gray-700">Client reviews</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="font-bold text-2xl text-blue-600 mb-1">3 Areas</p>
-                <p className="text-sm text-gray-700">Medicare, Individual, Group</p>
-              </div>
+              {[
+                {title: 'Medicare', image: 'http://www.lindakarp.com/uploads/5/7/9/6/57968355/2469576_orig.jpg', desc: 'Turning 65? Navigate Medigap, Advantage, Part D.', action: () => setActiveMain('medicare')},
+                {title: 'Individual', image: 'http://www.lindakarp.com/uploads/5/7/9/6/57968355/919447_orig.jpg', desc: 'CoveredCA coverage with subsidy optimization.', action: () => setActiveMain('individual')},
+                {title: 'Group', image: 'http://www.lindakarp.com/uploads/5/7/9/6/57968355/2469576_orig.jpg', desc: 'Offer coverage to your team. SHOP marketplace.', action: () => setActiveMain('group')}
+              ].map((item, i) => (
+                <button key={i} onClick={item.action} className="text-left rounded-lg overflow-hidden shadow hover:shadow-lg transition bg-white border border-gray-200">
+                  <div className="h-40 overflow-hidden bg-gray-100">
+                    <img src={item.image} alt={item.title} className="w-full h-full object-cover"/>
+                  </div>
+                  <div className="p-4">
+                    <p className="font-semibold text-gray-900 text-lg mb-2">{item.title}</p>
+                    <p className="text-sm text-gray-600">{item.desc}</p>
+                  </div>
+                </button>
+              ))}
             </div>
           </section>
 
-          {/* Three Options */}
-          <section className="max-w-5xl mx-auto px-6 py-8 border-t border-gray-200">
-            <p className="font-semibold text-gray-900 mb-4">I can help with:</p>
-            <div className="grid md:grid-cols-3 gap-4">
-              <button onClick={() => setActiveMain('medicare')} className="text-left border border-gray-200 rounded p-4 hover:border-blue-600 hover:bg-blue-50 transition">
-                <p className="font-semibold text-gray-900 text-sm mb-1">🏥 Medicare</p>
-                <p className="text-xs text-gray-600">Turning 65? Navigate Medigap, Advantage, Part D.</p>
-              </button>
-              <button onClick={() => setActiveMain('individual')} className="text-left border border-gray-200 rounded p-4 hover:border-blue-600 hover:bg-blue-50 transition">
-                <p className="font-semibold text-gray-900 text-sm mb-1">👨‍👩‍👧 Individual</p>
-                <p className="text-xs text-gray-600">CoveredCA coverage with subsidy optimization.</p>
-              </button>
-              <button onClick={() => setActiveMain('group')} className="text-left border border-gray-200 rounded p-4 hover:border-blue-600 hover:bg-blue-50 transition">
-                <p className="font-semibold text-gray-900 text-sm mb-1">🏢 Group</p>
-                <p className="text-xs text-gray-600">Offer coverage to your team. SHOP marketplace.</p>
-              </button>
+          {/* Quick Facts */}
+          <section className="bg-gray-50 py-8">
+            <div className="max-w-5xl mx-auto px-6">
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <p className="font-bold text-3xl text-blue-600 mb-1">28+</p>
+                  <p className="text-sm text-gray-700">Years in insurance</p>
+                </div>
+                <div className="text-center">
+                  <p className="font-bold text-3xl text-blue-600 mb-1">3</p>
+                  <p className="text-sm text-gray-700">Service areas</p>
+                </div>
+                <div className="text-center">
+                  <p className="font-bold text-3xl text-blue-600 mb-1">1000s</p>
+                  <p className="text-sm text-gray-700">Satisfied clients</p>
+                </div>
+              </div>
             </div>
           </section>
         </div>
@@ -237,6 +216,10 @@ export default function Home() {
 
       {activeMain === 'medicare' && (
         <section className="max-w-3xl mx-auto px-6 py-8">
+          <div className="rounded-lg overflow-hidden shadow-lg mb-6">
+            <img src="http://www.lindakarp.com/uploads/5/7/9/6/57968355/2469576_orig.jpg" alt="Medicare" className="w-full h-64 object-cover"/>
+          </div>
+          
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Medicare Planning</h2>
           
           <div className="space-y-4 mb-6">
@@ -258,7 +241,7 @@ export default function Home() {
             <div className="bg-blue-50 p-3 rounded"><p className="text-xs text-gray-600">Part A</p><p className="font-bold text-gray-900 text-sm">$1,780</p></div>
             <div className="bg-green-50 p-3 rounded"><p className="text-xs text-gray-600">Part B</p><p className="font-bold text-gray-900 text-sm">$280</p></div>
             <div className="bg-purple-50 p-3 rounded"><p className="text-xs text-gray-600">Medigap G</p><p className="font-bold text-gray-900 text-sm">$140-300</p></div>
-            <div className="bg-amber-50 p-3 rounded"><p className="text-xs text-gray-600">Part D Rx</p><p className="font-bold text-gray-900 text-sm">$30-100</p></div>
+            <div className="bg-amber-50 p-3 rounded"><p className="text-xs text-gray-600">Part D</p><p className="font-bold text-gray-900 text-sm">$30-100</p></div>
           </div>
 
           <div className="bg-orange-50 border border-orange-300 rounded p-3 text-xs text-gray-700 mb-6">
@@ -271,6 +254,10 @@ export default function Home() {
 
       {activeMain === 'individual' && (
         <section className="max-w-3xl mx-auto px-6 py-8">
+          <div className="rounded-lg overflow-hidden shadow-lg mb-6">
+            <img src="http://www.lindakarp.com/uploads/5/7/9/6/57968355/919447_orig.jpg" alt="Individual Plans" className="w-full h-64 object-cover"/>
+          </div>
+          
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Individual & Family Plans</h2>
           
           <p className="text-sm text-gray-700 mb-6">Coverage through CoveredCA. Many people qualify for government subsidies based on income.</p>
@@ -296,6 +283,10 @@ export default function Home() {
 
       {activeMain === 'group' && (
         <section className="max-w-3xl mx-auto px-6 py-8">
+          <div className="rounded-lg overflow-hidden shadow-lg mb-6">
+            <img src="http://www.lindakarp.com/uploads/5/7/9/6/57968355/2469576_orig.jpg" alt="Group Plans" className="w-full h-64 object-cover"/>
+          </div>
+          
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Group Coverage for Businesses</h2>
           
           <p className="text-sm text-gray-700 mb-6">Offering health coverage attracts talent, is tax-deductible, and qualifies for government tax credits.</p>
@@ -361,13 +352,6 @@ export default function Home() {
                       <option value="1">1-2</option>
                       <option value="3">3-5</option>
                       <option value="6">6+</option>
-                    </select></div>
-                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Doctor preference?</label>
-                    <select onChange={(e) => handleQuizAnswer('doctorPreference', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
-                      <option value="">Select...</option>
-                      <option value="any">See any doctor</option>
-                      <option value="network">Network OK</option>
-                      <option value="specific">Must see specific doctors</option>
                     </select></div>
                     <button onClick={calculateMedicareResults} className="w-full px-6 py-3 bg-blue-600 text-white rounded font-bold hover:bg-blue-700 text-sm">Generate Report</button>
                   </>
@@ -438,7 +422,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-6 px-6 mt-12">
         <div className="max-w-5xl mx-auto text-center text-xs text-gray-400">
-          <p className="mb-2">Linda Karp Insurance • La Mesa, CA • (619) 439-2110</p>
+          <p className="mb-2">Linda Karp Insurance • La Mesa, CA • (619) 439-2110 • info@lindakarp.com</p>
           <p>© 2026 Linda Karp Insurance Services</p>
         </div>
       </footer>

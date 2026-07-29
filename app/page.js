@@ -14,6 +14,9 @@ export default function Home() {
   }
 
   const handleOpenQuiz = (quizType) => {
+    setQuizAnswers({})
+    setQuizResults(null)
+    setAiAssessment(null)
     setShowQuiz(quizType)
   }
 

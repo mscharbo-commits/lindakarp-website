@@ -154,12 +154,12 @@ export default function Home() {
                   <p className="text-gray-700 mb-6 leading-relaxed">28 years helping Californians navigate Medicare, individual, and group coverage. Honest guidance. No pressure.</p>
                   
                   <div className="flex gap-2 mb-6 flex-wrap">
-                    <button onClick={() => setShowQuiz('medicare')} className="px-6 py-3 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700">Medicare</button>
+                    <button onClick={() => setShowQuiz('medicare')} className="px-6 py-3 border-2 border-blue-600 text-blue-600 rounded font-semibold hover:bg-blue-50">Medicare</button>
                     <button onClick={() => setShowQuiz('individual')} className="px-6 py-3 border-2 border-blue-600 text-blue-600 rounded font-semibold hover:bg-blue-50">Individual</button>
                     <button onClick={() => setShowQuiz('group')} className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded font-semibold hover:bg-gray-50">Group</button>
                   </div>
 
-                  <p className="text-sm text-gray-600">La Mesa, CA • (619) 439-2110</p>
+                  <p className="text-sm text-gray-600">San Diego, CA • (619) 439-2110</p>
                 </div>
                 <div className="rounded-lg overflow-hidden shadow-lg">
                   <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop" alt="Health insurance consultation" className="w-full h-80 object-cover"/>
@@ -432,7 +432,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-6 px-6 mt-12">
         <div className="max-w-5xl mx-auto text-center text-xs text-gray-400">
-          <p className="mb-2">Linda Karp Insurance • La Mesa, CA • (619) 439-2110 • info@lindakarp.com</p>
+          <p className="mb-2">Linda Karp Insurance • San Diego, CA • (619) 439-2110 • info@lindakarp.com</p>
           <p>© 2026 Linda Karp Insurance Services</p>
         </div>
       </footer>

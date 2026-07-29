@@ -62,6 +62,8 @@ export default function Home() {
     }
     setLoadingAssessment(false)
   }
+
+  const generatePDF = () => {
     if (!window.jspdf) {
       alert('PDF library is loading. Please try again in a moment.')
       return

@@ -12,13 +12,130 @@ export default function Home() {
   }
 
   const generatePDF = () => {
-    const content = `Assessment - ${new Date().toLocaleDateString()}\n${quizResults.details}\n${quizResults.recommendations.join('\n')}`
-    const element = document.createElement('a')
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content))
-    element.setAttribute('download', 'assessment.txt')
-    document.body.appendChild(element)
-    element.click()
-    document.body.removeChild(element)
+    if (!window.jspdf) {
+      alert('PDF library is loading. Please try again in a moment.')
+      return
+    }
+    const { jsPDF } = window.jspdf
+    const doc = new jsPDF()
+    const pageHeight = doc.internal.pageSize.getHeight()
+    const pageWidth = doc.internal.pageSize.getWidth()
+    const margin = 15
+    let yPos = margin
+
+    // Title
+    doc.setFontSize(24)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Linda Karp Insurance', margin, yPos)
+    yPos += 10
+
+    // Assessment type & date
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'normal')
+    doc.text(`San Diego, CA | (619) 439-2110 | info@lindakarp.com`, margin, yPos)
+    yPos += 8
+
+    // Assessment title
+    doc.setFontSize(16)
+    doc.setFont('helvetica', 'bold')
+    const assessmentType = showQuiz === 'medicare' ? 'Medicare Assessment' : showQuiz === 'individual' ? 'Individual Plan Assessment' : 'Group Plan Assessment'
+    doc.text(assessmentType, margin, yPos)
+    yPos += 10
+
+    // Date
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, margin, yPos)
+    yPos += 8
+
+    // Divider
+    doc.setDrawColor(100, 150, 200)
+    doc.line(margin, yPos, pageWidth - margin, yPos)
+    yPos += 8
+
+    // Contact Info Section
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Your Information:', margin, yPos)
+    yPos += 6
+
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    doc.text(`Name: ${quizAnswers.name || 'Not provided'}`, margin + 5, yPos)
+    yPos += 5
+    doc.text(`Email: ${quizAnswers.email || 'Not provided'}`, margin + 5, yPos)
+    yPos += 5
+    doc.text(`Phone: ${quizAnswers.phone || 'Not provided'}`, margin + 5, yPos)
+    yPos += 8
+
+    // Divider
+    doc.setDrawColor(100, 150, 200)
+    doc.line(margin, yPos, pageWidth - margin, yPos)
+    yPos += 8
+
+    // Assessment Details
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Assessment Details:', margin, yPos)
+    yPos += 6
+
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    const detailLines = doc.splitTextToSize(quizResults.details, pageWidth - 2 * margin - 5)
+    doc.text(detailLines, margin + 5, yPos)
+    yPos += detailLines.length * 5 + 5
+
+    // Divider
+    doc.setDrawColor(100, 150, 200)
+    doc.line(margin, yPos, pageWidth - margin, yPos)
+    yPos += 8
+
+    // Recommendations Section
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Personalized Recommendations:', margin, yPos)
+    yPos += 8
+
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    quizResults.recommendations.forEach((rec, idx) => {
+      const recLines = doc.splitTextToSize(`${idx + 1}. ${rec}`, pageWidth - 2 * margin - 10)
+      doc.text(recLines, margin + 5, yPos)
+      yPos += recLines.length * 5
+
+      if (quizResults.estimatedCosts[idx]) {
+        doc.setFont('helvetica', 'bold')
+        const costLines = doc.splitTextToSize(`Cost: ${quizResults.estimatedCosts[idx]}`, pageWidth - 2 * margin - 15)
+        doc.text(costLines, margin + 10, yPos)
+        yPos += costLines.length * 5
+        doc.setFont('helvetica', 'normal')
+      }
+
+      yPos += 3
+
+      // Check if we need a new page
+      if (yPos > pageHeight - 20) {
+        doc.addPage()
+        yPos = margin
+      }
+    })
+
+    yPos += 5
+
+    // Divider
+    doc.setDrawColor(100, 150, 200)
+    doc.line(margin, yPos, pageWidth - margin, yPos)
+    yPos += 8
+
+    // Footer message
+    doc.setFontSize(9)
+    doc.setFont('helvetica', 'italic')
+    doc.setTextColor(100, 100, 100)
+    const footerLines = doc.splitTextToSize('Questions? Contact Linda Karp for a free consultation. We are here to help you find the right insurance coverage for your needs.', pageWidth - 2 * margin - 5)
+    doc.text(footerLines, margin + 5, yPos)
+
+    // Save PDF
+    doc.save('lindakarp-assessment.pdf')
   }
 
   const incomeRanges = {
@@ -131,6 +248,8 @@ export default function Home() {
       </div>
     </div>
   )
+
+
 
   return (
     <div className="min-h-screen bg-white">

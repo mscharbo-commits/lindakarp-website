@@ -1,6 +1,5 @@
 'use client'
 import { useState } from 'react'
-import Image from 'next/image'
 
 export default function Home() {
   const [activeMain, setActiveMain] = useState('home')
@@ -34,7 +33,6 @@ export default function Home() {
   const calculateMedicareResults = () => {
     const age = parseInt(quizAnswers.age) || 0
     const employed = quizAnswers.employed === 'yes'
-    const income = incomeRanges[quizAnswers.income]?.value || 0
     const conditions = quizAnswers.conditions === 'yes'
     const medications = parseInt(quizAnswers.medications) || 0
 
@@ -62,7 +60,7 @@ export default function Home() {
     setQuizResults({
       recommendations,
       estimatedCosts,
-      details: `Age: ${age} | Employment: ${employed ? 'Working' : 'Retired'} | Income: ${quizAnswers.income ? incomeRanges[quizAnswers.income].label : 'Not specified'} | Chronic Conditions: ${conditions ? 'Yes' : 'No'} | # of Medications: ${medications}`
+      details: `Age: ${age} | Employment: ${employed ? 'Working' : 'Retired'} | Chronic Conditions: ${conditions ? 'Yes' : 'No'} | # of Medications: ${medications}`
     })
   }
 
@@ -164,7 +162,7 @@ export default function Home() {
                   <p className="text-sm text-gray-600">La Mesa, CA • (619) 439-2110</p>
                 </div>
                 <div className="rounded-lg overflow-hidden shadow-lg">
-                  <img src="http://www.lindakarp.com/uploads/5/7/9/6/57968355/919447_orig.jpg" alt="Linda Karp" className="w-full h-80 object-cover"/>
+                  <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop" alt="Health insurance consultation" className="w-full h-80 object-cover"/>
                 </div>
               </div>
             </div>
@@ -174,21 +172,33 @@ export default function Home() {
           <section className="max-w-5xl mx-auto px-6 py-12">
             <p className="font-semibold text-gray-900 mb-6 text-lg">I can help with:</p>
             <div className="grid md:grid-cols-3 gap-6">
-              {[
-                {title: 'Medicare', image: 'http://www.lindakarp.com/uploads/5/7/9/6/57968355/2469576_orig.jpg', desc: 'Turning 65? Navigate Medigap, Advantage, Part D.', action: () => setActiveMain('medicare')},
-                {title: 'Individual', image: 'http://www.lindakarp.com/uploads/5/7/9/6/57968355/919447_orig.jpg', desc: 'CoveredCA coverage with subsidy optimization.', action: () => setActiveMain('individual')},
-                {title: 'Group', image: 'http://www.lindakarp.com/uploads/5/7/9/6/57968355/2469576_orig.jpg', desc: 'Offer coverage to your team. SHOP marketplace.', action: () => setActiveMain('group')}
-              ].map((item, i) => (
-                <button key={i} onClick={item.action} className="text-left rounded-lg overflow-hidden shadow hover:shadow-lg transition bg-white border border-gray-200">
-                  <div className="h-40 overflow-hidden bg-gray-100">
-                    <img src={item.image} alt={item.title} className="w-full h-full object-cover"/>
-                  </div>
-                  <div className="p-4">
-                    <p className="font-semibold text-gray-900 text-lg mb-2">{item.title}</p>
-                    <p className="text-sm text-gray-600">{item.desc}</p>
-                  </div>
-                </button>
-              ))}
+              <button onClick={() => setActiveMain('medicare')} className="text-left rounded-lg overflow-hidden shadow hover:shadow-lg transition bg-white border border-gray-200">
+                <div className="h-40 overflow-hidden bg-gray-100">
+                  <img src="https://images.unsplash.com/photo-1631217b88dfc5c7a8c4b4d4b5b6b4d5?w=600&h=300&fit=crop" alt="Medicare" className="w-full h-full object-cover"/>
+                </div>
+                <div className="p-4">
+                  <p className="font-semibold text-gray-900 text-lg mb-2">Medicare</p>
+                  <p className="text-sm text-gray-600">Turning 65? Navigate Medigap, Advantage, Part D.</p>
+                </div>
+              </button>
+              <button onClick={() => setActiveMain('individual')} className="text-left rounded-lg overflow-hidden shadow hover:shadow-lg transition bg-white border border-gray-200">
+                <div className="h-40 overflow-hidden bg-gray-100">
+                  <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=300&fit=crop" alt="Individual coverage" className="w-full h-full object-cover"/>
+                </div>
+                <div className="p-4">
+                  <p className="font-semibold text-gray-900 text-lg mb-2">Individual</p>
+                  <p className="text-sm text-gray-600">CoveredCA coverage with subsidy optimization.</p>
+                </div>
+              </button>
+              <button onClick={() => setActiveMain('group')} className="text-left rounded-lg overflow-hidden shadow hover:shadow-lg transition bg-white border border-gray-200">
+                <div className="h-40 overflow-hidden bg-gray-100">
+                  <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=300&fit=crop" alt="Group benefits" className="w-full h-full object-cover"/>
+                </div>
+                <div className="p-4">
+                  <p className="font-semibold text-gray-900 text-lg mb-2">Group</p>
+                  <p className="text-sm text-gray-600">Offer coverage to your team. SHOP marketplace.</p>
+                </div>
+              </button>
             </div>
           </section>
 
@@ -217,7 +227,7 @@ export default function Home() {
       {activeMain === 'medicare' && (
         <section className="max-w-3xl mx-auto px-6 py-8">
           <div className="rounded-lg overflow-hidden shadow-lg mb-6">
-            <img src="http://www.lindakarp.com/uploads/5/7/9/6/57968355/2469576_orig.jpg" alt="Medicare" className="w-full h-64 object-cover"/>
+            <img src="https://images.unsplash.com/photo-1631217b88dfc5c7a8c4b4d4b5b6b4d5?w=800&h=400&fit=crop" alt="Medicare planning" className="w-full h-64 object-cover"/>
           </div>
           
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Medicare Planning</h2>
@@ -255,7 +265,7 @@ export default function Home() {
       {activeMain === 'individual' && (
         <section className="max-w-3xl mx-auto px-6 py-8">
           <div className="rounded-lg overflow-hidden shadow-lg mb-6">
-            <img src="http://www.lindakarp.com/uploads/5/7/9/6/57968355/919447_orig.jpg" alt="Individual Plans" className="w-full h-64 object-cover"/>
+            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=400&fit=crop" alt="Individual and family plans" className="w-full h-64 object-cover"/>
           </div>
           
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Individual & Family Plans</h2>
@@ -284,7 +294,7 @@ export default function Home() {
       {activeMain === 'group' && (
         <section className="max-w-3xl mx-auto px-6 py-8">
           <div className="rounded-lg overflow-hidden shadow-lg mb-6">
-            <img src="http://www.lindakarp.com/uploads/5/7/9/6/57968355/2469576_orig.jpg" alt="Group Plans" className="w-full h-64 object-cover"/>
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=400&fit=crop" alt="Group benefits" className="w-full h-64 object-cover"/>
           </div>
           
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Group Coverage for Businesses</h2>

@@ -337,6 +337,15 @@ export default function Home() {
               <div className="space-y-4 max-h-[60vh] overflow-y-auto">
                 {showQuiz === 'medicare' && (
                   <>
+                    <div className="bg-blue-50 border border-blue-200 p-3 rounded text-xs text-gray-700 mb-4">
+                      <strong>📋 Your contact info helps us follow up with personalized recommendations</strong>
+                    </div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Name</label>
+                    <input type="text" placeholder="Your name" onChange={(e) => handleQuizAnswer('name', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Email</label>
+                    <input type="email" placeholder="Your email" onChange={(e) => handleQuizAnswer('email', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Phone</label>
+                    <input type="tel" placeholder="(619) XXX-XXXX" onChange={(e) => handleQuizAnswer('phone', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Age?</label>
                     <input type="number" placeholder="65" onChange={(e) => handleQuizAnswer('age', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Currently employed?</label>
@@ -369,6 +378,15 @@ export default function Home() {
 
                 {showQuiz === 'individual' && (
                   <>
+                    <div className="bg-blue-50 border border-blue-200 p-3 rounded text-xs text-gray-700 mb-4">
+                      <strong>📋 Your contact info helps us follow up with personalized recommendations</strong>
+                    </div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Name</label>
+                    <input type="text" placeholder="Your name" onChange={(e) => handleQuizAnswer('name', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Email</label>
+                    <input type="email" placeholder="Your email" onChange={(e) => handleQuizAnswer('email', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Phone</label>
+                    <input type="tel" placeholder="(619) XXX-XXXX" onChange={(e) => handleQuizAnswer('phone', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Household income?</label>
                     <select onChange={(e) => handleQuizAnswer('ind_income', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
                       <option value="">Select...</option>
@@ -400,6 +418,17 @@ export default function Home() {
 
                 {showQuiz === 'group' && (
                   <>
+                    <div className="bg-blue-50 border border-blue-200 p-3 rounded text-xs text-gray-700 mb-4">
+                      <strong>📋 Your contact info helps us follow up with personalized recommendations</strong>
+                    </div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Name</label>
+                    <input type="text" placeholder="Your name" onChange={(e) => handleQuizAnswer('name', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Email</label>
+                    <input type="email" placeholder="Your email" onChange={(e) => handleQuizAnswer('email', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Phone</label>
+                    <input type="tel" placeholder="(619) XXX-XXXX" onChange={(e) => handleQuizAnswer('phone', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <div><label className="block text-sm font-semibold text-gray-900 mb-2">Company name</label>
+                    <input type="text" placeholder="Your company" onChange={(e) => handleQuizAnswer('company', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Number of employees?</label>
                     <input type="number" placeholder="25" onChange={(e) => handleQuizAnswer('group_employees', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Average employee salary?</label>
@@ -412,6 +441,12 @@ export default function Home() {
               </div>
             ) : (
               <div className="space-y-4">
+                <div className="bg-gray-50 p-4 rounded border border-gray-300">
+                  <p className="text-sm font-semibold text-gray-900 mb-2">📞 Contact Info</p>
+                  <p className="text-xs text-gray-700"><strong>Name:</strong> {quizAnswers.name || '(not provided)'}</p>
+                  <p className="text-xs text-gray-700"><strong>Email:</strong> {quizAnswers.email || '(not provided)'}</p>
+                  <p className="text-xs text-gray-700"><strong>Phone:</strong> {quizAnswers.phone || '(not provided)'}</p>
+                </div>
                 <div className="bg-gray-100 p-4 rounded text-xs text-gray-700">{quizResults.details}</div>
                 {quizResults.recommendations.map((r, i) => (
                   <div key={i} className="bg-blue-50 border border-blue-200 p-4 rounded">

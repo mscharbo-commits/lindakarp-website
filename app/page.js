@@ -222,13 +222,13 @@ export default function Home() {
         recommendations.push('Medicare Advantage (Part C) - Covers prescriptions, often $0 premium')
         estimatedCosts.push('Premium: $0-150/month (copays for visits/drugs)')
       } else {
-        recommendations.push('Medicare Supplement Plan G - Most comprehensive gap coverage')
-        estimatedCosts.push('Premium: $140-300/month')
+        recommendations.push('Medicare Supplement Plan G - Covers deductibles and gaps')
+        estimatedCosts.push('Medigap G Premium: $140-300/month | Part A Deductible: $1,780 | Part B Deductible: $280')
       }
       
       if (medications > 0) {
         recommendations.push('Part D Prescription Drug - Match to your specific medications')
-        estimatedCosts.push('Premium: $30-100/month')
+        estimatedCosts.push('Part D Premium: $30-100/month')
       }
 
       recommendations.push('Review Enrollment Deadlines - Avoid lifetime penalties')

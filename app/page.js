@@ -340,24 +340,69 @@ export default function Home() {
 
       {activeMain === 'home' && (
         <div>
-          {/* Warm Hero with Image */}
-          <section className="bg-gradient-to-r from-blue-50 to-blue-100">
-            <div className="max-w-5xl mx-auto px-6 py-12">
-              <div className="grid md:grid-cols-2 gap-8 items-center">
+          {/* Hero Section */}
+          <section className="bg-white">
+            <div className="max-w-6xl mx-auto px-6 py-16">
+              <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
                 <div>
-                  <h1 className="text-4xl font-bold text-gray-900 mb-4">Health insurance you can trust</h1>
-                  <p className="text-gray-700 mb-6 leading-relaxed">28 years helping Californians navigate Medicare, individual, and group coverage. Honest guidance. No pressure.</p>
-                  
-                  <div className="flex gap-2 mb-6 flex-wrap">
-                    <button onClick={() => setActiveMain('medicare')} className="px-6 py-3 border-2 border-blue-600 text-blue-600 rounded font-semibold hover:bg-blue-50">Medicare</button>
-                    <button onClick={() => setActiveMain('individual')} className="px-6 py-3 border-2 border-blue-600 text-blue-600 rounded font-semibold hover:bg-blue-50">Individual</button>
-                    <button onClick={() => setActiveMain('group')} className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded font-semibold hover:bg-gray-50">Group</button>
-                  </div>
-
-                  <p className="text-sm text-gray-600">San Diego, CA • (619) 439-2110</p>
+                  <h1 className="text-5xl font-bold text-gray-900 mb-6">Health insurance you can trust</h1>
+                  <p className="text-lg text-gray-600 mb-8 leading-relaxed">28 years helping Californians navigate Medicare, individual, and group coverage. As your local insurance broker, we compare top plans from trusted carriers to find the right coverage for you, your family, and your future. Honest guidance. No pressure.</p>
+                  <button onClick={() => handleOpenQuiz('medicare')} className="px-8 py-4 bg-blue-700 text-white rounded font-semibold hover:bg-blue-800 text-lg">Let's Find the Right Plan for You</button>
                 </div>
-                <div className="rounded-lg overflow-hidden shadow-lg">
-                  <img src="/homepage-hero.png" alt="Healthcare consultation" className="w-full h-80 object-cover"/>
+                <div className="rounded-lg overflow-hidden shadow-xl">
+                  <img src="/homepage-hero.png" alt="Health insurance consultation" className="w-full h-96 object-cover"/>
+                </div>
+              </div>
+
+              {/* Three Category Cards */}
+              <div className="grid md:grid-cols-3 gap-8 mb-8">
+                <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-md hover:shadow-lg transition">
+                  <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mb-4">
+                    <span className="text-white text-2xl font-bold">65+</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">Medicare Coverage</h3>
+                  <p className="text-gray-600 mb-6">Explore Medicare Advantage, Supplement, and Part D plans that fit your needs.</p>
+                  <button onClick={() => setActiveMain('medicare')} className="text-blue-600 font-semibold hover:text-blue-700">Learn More →</button>
+                </div>
+
+                <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-md hover:shadow-lg transition">
+                  <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-4">
+                    <span className="text-white text-2xl font-bold">👥</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">Group Insurance</h3>
+                  <p className="text-gray-600 mb-6">Protect your team and build a stronger tomorrow with custom group solutions.</p>
+                  <button onClick={() => setActiveMain('group')} className="text-green-600 font-semibold hover:text-green-700">Learn More →</button>
+                </div>
+
+                <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-md hover:shadow-lg transition">
+                  <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mb-4">
+                    <span className="text-white text-2xl font-bold">👤</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">Individual Insurance</h3>
+                  <p className="text-gray-600 mb-6">Find affordable health coverage that fits your life and your budget.</p>
+                  <button onClick={() => setActiveMain('individual')} className="text-purple-600 font-semibold hover:text-purple-700">Learn More →</button>
+                </div>
+              </div>
+
+              {/* Trust Section */}
+              <div className="bg-blue-50 rounded-lg p-8 mt-12">
+                <div className="grid md:grid-cols-4 gap-8 text-center">
+                  <div>
+                    <p className="text-4xl font-bold text-blue-700 mb-2">28+</p>
+                    <p className="text-gray-700">Years of Experience</p>
+                  </div>
+                  <div>
+                    <p className="text-4xl font-bold text-blue-700 mb-2">3</p>
+                    <p className="text-gray-700">Coverage Categories</p>
+                  </div>
+                  <div>
+                    <p className="text-4xl font-bold text-blue-700 mb-2">1000s</p>
+                    <p className="text-gray-700">Satisfied Clients</p>
+                  </div>
+                  <div>
+                    <p className="text-4xl font-bold text-blue-700 mb-2">San Diego</p>
+                    <p className="text-gray-700">(619) 439-2110</p>
+                  </div>
                 </div>
               </div>
             </div>

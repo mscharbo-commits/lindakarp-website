@@ -357,7 +357,7 @@ export default function Home() {
                   <p className="text-sm text-gray-600">San Diego, CA • (619) 439-2110</p>
                 </div>
                 <div className="rounded-lg overflow-hidden shadow-lg">
-                  <img src="https://images.unsplash.com/photo-1631217314831-c6227db76b6e?w=600&h=400&fit=crop" alt="Health insurance consultation" className="w-full h-80 object-cover"/>
+                  <img src="https://images.unsplash.com/photo-1576091160633-e09ee1e74aeb?w=600&h=400&fit=crop" alt="Health insurance consultation" className="w-full h-80 object-cover"/>
                 </div>
               </div>
             </div>
@@ -369,7 +369,7 @@ export default function Home() {
             <div className="grid md:grid-cols-3 gap-6">
               <button onClick={() => setActiveMain('medicare')} className="text-left rounded-lg overflow-hidden shadow hover:shadow-lg transition bg-white border border-gray-200">
                 <div className="h-40 overflow-hidden bg-gray-100">
-                  <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=300&fit=crop" alt="Medicare" className="w-full h-full object-cover"/>
+                  <img src="https://images.unsplash.com/photo-1559947662-c428cf2f87e6?w=600&h=300&fit=crop" alt="Medicare" className="w-full h-full object-cover"/>
                 </div>
                 <div className="p-4">
                   <p className="font-semibold text-gray-900 text-lg mb-2">Medicare</p>
@@ -431,7 +431,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="rounded-lg overflow-hidden shadow-lg">
-              <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=400&fit=crop" alt="Medicare planning" className="w-full h-80 object-cover"/>
+              <img src="https://images.unsplash.com/photo-1559947662-c428cf2f87e6?w=600&h=400&fit=crop" alt="Medicare planning" className="w-full h-80 object-cover"/>
             </div>
             
             <div className="space-y-4">

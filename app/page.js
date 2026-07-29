@@ -353,56 +353,6 @@ export default function Home() {
                   <img src="/homepage-hero.png" alt="Health insurance consultation" className="w-full h-96 object-cover"/>
                 </div>
               </div>
-
-              {/* Three Category Cards */}
-              {/* Three Categories with Images */}
-              <div className="grid md:grid-cols-3 gap-6">
-                <button onClick={() => setActiveMain('medicare')} className="text-left rounded-lg overflow-hidden shadow hover:shadow-lg transition bg-white border border-gray-200">
-                  <div className="h-40 overflow-hidden bg-gray-100">
-                    <img src="/medicare-older-adults.png" alt="Medicare" className="w-full h-full object-cover"/>
-                  </div>
-                  <div className="p-4">
-                    <p className="font-semibold text-gray-900 text-lg mb-2">Ready to Tackle Medicare? We'll Guide You</p>
-                    <p className="text-sm text-gray-600">Turning 65? Navigate Medigap, Advantage, Part D.</p>
-                  </div>
-                </button>
-                <button onClick={() => setActiveMain('individual')} className="text-left rounded-lg overflow-hidden shadow hover:shadow-lg transition bg-white border border-gray-200">
-                  <div className="h-40 overflow-hidden bg-gray-100">
-                    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=300&fit=crop" alt="Individual coverage" className="w-full h-full object-cover"/>
-                  </div>
-                  <div className="p-4">
-                    <p className="font-semibold text-gray-900 text-lg mb-2">Individual</p>
-                    <p className="text-sm text-gray-600">CoveredCA coverage with subsidy optimization.</p>
-                  </div>
-                </button>
-                <button onClick={() => setActiveMain('group')} className="text-left rounded-lg overflow-hidden shadow hover:shadow-lg transition bg-white border border-gray-200">
-                  <div className="h-40 overflow-hidden bg-gray-100">
-                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=300&fit=crop" alt="Group benefits" className="w-full h-full object-cover"/>
-                  </div>
-                  <div className="p-4">
-                    <p className="font-semibold text-gray-900 text-lg mb-2">Group</p>
-                    <p className="text-sm text-gray-600">Offer coverage to your team. SHOP marketplace.</p>
-                  </div>
-                </button>
-              </div>
-
-              {/* Trust Section */}
-              <div className="bg-blue-50 rounded-lg p-8 mt-12">
-                <div className="grid md:grid-cols-3 gap-8 text-center">
-                  <div>
-                    <p className="text-4xl font-bold text-blue-700 mb-2">28+</p>
-                    <p className="text-gray-700">Years in insurance</p>
-                  </div>
-                  <div>
-                    <p className="text-4xl font-bold text-blue-700 mb-2">3</p>
-                    <p className="text-gray-700">Service areas</p>
-                  </div>
-                  <div>
-                    <p className="text-4xl font-bold text-blue-700 mb-2">1000s</p>
-                    <p className="text-gray-700">Satisfied clients</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </section>
 

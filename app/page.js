@@ -116,23 +116,29 @@ export default function Home() {
     })
   }
 
+  const Logo = () => (
+    <div className="flex items-center gap-3">
+      <div className="w-16 h-16 flex items-center justify-center">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-14 h-14">
+          <circle cx="35" cy="35" r="22" fill="none" stroke="#8db3d8" strokeWidth="3"/>
+          <circle cx="65" cy="35" r="22" fill="none" stroke="#5b8fc7" strokeWidth="3"/>
+          <circle cx="50" cy="58" r="22" fill="none" stroke="#4a6fa5" strokeWidth="3"/>
+        </svg>
+      </div>
+      <div className="text-left">
+        <p className="font-bold text-lg text-gray-900">Linda Karp</p>
+        <p className="text-xs text-gray-600 font-semibold">Insurance Services</p>
+      </div>
+    </div>
+  )
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="border-b border-gray-300 sticky top-0 z-30 bg-white">
-        <div className="max-w-5xl mx-auto px-6 py-3 flex justify-between items-center">
-          <button onClick={() => setActiveMain('home')} className="flex items-center gap-2">
-            <div className="w-10 h-10 flex items-center justify-center">
-              <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
-                <circle cx="35" cy="35" r="22" fill="none" stroke="#8db3d8" strokeWidth="3"/>
-                <circle cx="65" cy="35" r="22" fill="none" stroke="#5b8fc7" strokeWidth="3"/>
-                <circle cx="50" cy="58" r="22" fill="none" stroke="#4a6fa5" strokeWidth="3"/>
-              </svg>
-            </div>
-            <div className="text-left">
-              <p className="font-semibold text-sm text-gray-900">Linda Karp</p>
-              <p className="text-xs text-gray-600">Insurance</p>
-            </div>
+        <div className="max-w-5xl mx-auto px-6 py-2 flex justify-between items-center">
+          <button onClick={() => setActiveMain('home')} className="flex items-center">
+            <Logo />
           </button>
           <nav className="flex gap-6 items-center text-xs">
             <button onClick={() => setActiveMain('medicare')} className="text-gray-700 hover:text-blue-600 font-medium">Medicare</button>
@@ -154,9 +160,9 @@ export default function Home() {
                   <p className="text-gray-700 mb-6 leading-relaxed">28 years helping Californians navigate Medicare, individual, and group coverage. Honest guidance. No pressure.</p>
                   
                   <div className="flex gap-2 mb-6 flex-wrap">
-                    <button onClick={() => setShowQuiz('medicare')} className="px-6 py-3 border-2 border-blue-600 text-blue-600 rounded font-semibold hover:bg-blue-50">Medicare</button>
-                    <button onClick={() => setShowQuiz('individual')} className="px-6 py-3 border-2 border-blue-600 text-blue-600 rounded font-semibold hover:bg-blue-50">Individual</button>
-                    <button onClick={() => setShowQuiz('group')} className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded font-semibold hover:bg-gray-50">Group</button>
+                    <button onClick={() => setActiveMain('medicare')} className="px-6 py-3 border-2 border-blue-600 text-blue-600 rounded font-semibold hover:bg-blue-50">Medicare</button>
+                    <button onClick={() => setActiveMain('individual')} className="px-6 py-3 border-2 border-blue-600 text-blue-600 rounded font-semibold hover:bg-blue-50">Individual</button>
+                    <button onClick={() => setActiveMain('group')} className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded font-semibold hover:bg-gray-50">Group</button>
                   </div>
 
                   <p className="text-sm text-gray-600">San Diego, CA • (619) 439-2110</p>
@@ -225,98 +231,135 @@ export default function Home() {
       )}
 
       {activeMain === 'medicare' && (
-        <section className="max-w-3xl mx-auto px-6 py-8">
-          <div className="rounded-lg overflow-hidden shadow-lg mb-6">
-            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=400&fit=crop" alt="Medicare planning" className="w-full h-64 object-cover"/>
-          </div>
+        <section className="max-w-4xl mx-auto px-6 py-8">
+          <button onClick={() => setActiveMain('home')} className="mb-6 text-blue-600 hover:text-blue-700 text-sm font-semibold">← Back to Home</button>
           
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Medicare Planning</h2>
-          
-          <div className="space-y-4 mb-6">
-            <div className="border-l-4 border-blue-500 pl-4 py-2">
-              <p className="font-semibold text-gray-900 text-sm">Original Medicare (Part A & B)</p>
-              <p className="text-xs text-gray-600">Government coverage. Part A: hospital. Part B: doctor. Covers 80% after deductible.</p>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Medicare Planning & Guidance</h1>
+            <p className="text-gray-700 text-lg mb-6">Turning 65? Let's find the right Medicare coverage for you. With 28 years of experience, I help clients understand all options and avoid costly mistakes.</p>
+            <button onClick={() => setShowQuiz('medicare')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Start Your Medicare Assessment</button>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div className="rounded-lg overflow-hidden shadow-lg">
+              <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop" alt="Medicare planning" className="w-full h-80 object-cover"/>
             </div>
-            <div className="border-l-4 border-green-500 pl-4 py-2">
-              <p className="font-semibold text-gray-900 text-sm">Medicare Supplement (Medigap) — Plan G</p>
-              <p className="text-xs text-gray-600">Most popular. Covers deductibles & copays. $140-300/month. Keep any Medicare doctor.</p>
-            </div>
-            <div className="border-l-4 border-purple-500 pl-4 py-2">
-              <p className="font-semibold text-gray-900 text-sm">Medicare Advantage (Part C)</p>
-              <p className="text-xs text-gray-600">All-in-one with prescriptions. Often $0 premium. Network doctors.</p>
+            
+            <div className="space-y-4">
+              <div className="border-l-4 border-blue-500 pl-4 py-2">
+                <p className="font-semibold text-gray-900 text-sm">Original Medicare (Part A & B)</p>
+                <p className="text-xs text-gray-600">Government coverage. Part A: hospital. Part B: doctor. Covers 80% after deductible.</p>
+              </div>
+              <div className="border-l-4 border-green-500 pl-4 py-2">
+                <p className="font-semibold text-gray-900 text-sm">Medicare Supplement (Medigap) — Plan G</p>
+                <p className="text-xs text-gray-600">Most popular. Covers deductibles & copays. $140-300/month. Keep any Medicare doctor.</p>
+              </div>
+              <div className="border-l-4 border-purple-500 pl-4 py-2">
+                <p className="font-semibold text-gray-900 text-sm">Medicare Advantage (Part C)</p>
+                <p className="text-xs text-gray-600">All-in-one with prescriptions. Often $0 premium. Network doctors.</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-gray-200">
+                <div className="bg-blue-50 p-3 rounded text-center"><p className="text-xs text-gray-600">Part A</p><p className="font-bold text-gray-900">$1,780</p></div>
+                <div className="bg-green-50 p-3 rounded text-center"><p className="text-xs text-gray-600">Part B</p><p className="font-bold text-gray-900">$280</p></div>
+                <div className="bg-purple-50 p-3 rounded text-center"><p className="text-xs text-gray-600">Medigap G</p><p className="font-bold text-gray-900">$140-300</p></div>
+                <div className="bg-amber-50 p-3 rounded text-center"><p className="text-xs text-gray-600">Part D</p><p className="font-bold text-gray-900">$30-100</p></div>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-2 mb-6 text-center">
-            <div className="bg-blue-50 p-3 rounded"><p className="text-xs text-gray-600">Part A</p><p className="font-bold text-gray-900 text-sm">$1,780</p></div>
-            <div className="bg-green-50 p-3 rounded"><p className="text-xs text-gray-600">Part B</p><p className="font-bold text-gray-900 text-sm">$280</p></div>
-            <div className="bg-purple-50 p-3 rounded"><p className="text-xs text-gray-600">Medigap G</p><p className="font-bold text-gray-900 text-sm">$140-300</p></div>
-            <div className="bg-amber-50 p-3 rounded"><p className="text-xs text-gray-600">Part D</p><p className="font-bold text-gray-900 text-sm">$30-100</p></div>
+          <div className="bg-orange-50 border border-orange-300 rounded p-4 text-sm text-gray-700 mb-8">
+            <strong>⚠️ Critical Timing:</strong> Enroll within 7 months of turning 65 (3 months before, during, 3 months after). Late penalties are permanent and apply for life.
           </div>
 
-          <div className="bg-orange-50 border border-orange-300 rounded p-3 text-xs text-gray-700 mb-6">
-            <strong>⚠️ Critical:</strong> Enroll within 7 months of turning 65. Late penalties are permanent.
+          <div className="bg-blue-100 border border-blue-300 rounded-lg p-8 text-center">
+            <p className="text-gray-900 font-semibold mb-4 text-lg">Ready to find your best Medicare plan?</p>
+            <button onClick={() => setShowQuiz('medicare')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Get Personalized Recommendations</button>
           </div>
-
-          <button onClick={() => setShowQuiz('medicare')} className="w-full px-4 py-2 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 text-sm">Get My Medicare Recommendation</button>
         </section>
       )}
 
       {activeMain === 'individual' && (
-        <section className="max-w-3xl mx-auto px-6 py-8">
-          <div className="rounded-lg overflow-hidden shadow-lg mb-6">
-            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=400&fit=crop" alt="Individual and family plans" className="w-full h-64 object-cover"/>
-          </div>
+        <section className="max-w-4xl mx-auto px-6 py-8">
+          <button onClick={() => setActiveMain('home')} className="mb-6 text-blue-600 hover:text-blue-700 text-sm font-semibold">← Back to Home</button>
           
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Individual & Family Plans</h2>
-          
-          <p className="text-sm text-gray-700 mb-6">Coverage through CoveredCA. Many people qualify for government subsidies based on income.</p>
-
-          <div className="space-y-3 mb-6">
-            <div className="bg-blue-50 rounded p-3 border border-blue-200">
-              <p className="font-semibold text-gray-900 text-sm mb-1">No exclusions for pre-existing conditions</p>
-              <p className="text-xs text-gray-600">Everyone accepted. Always covered.</p>
-            </div>
-            <div className="bg-green-50 rounded p-3 border border-green-200">
-              <p className="font-semibold text-gray-900 text-sm mb-1">Tax credits based on income</p>
-              <p className="text-xs text-gray-600">Individual max: $37k | Family of 4: $76k for full subsidy</p>
-            </div>
-            <div className="bg-purple-50 rounded p-3 border border-purple-200">
-              <p className="font-semibold text-gray-900 text-sm mb-1">4 plan types: Bronze (60%) to Platinum (90%)</p>
-              <p className="text-xs text-gray-600">Pick your coverage level and monthly cost.</p>
-            </div>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Individual & Family Health Plans</h1>
+            <p className="text-gray-700 text-lg mb-6">Coverage through CoveredCA with subsidy optimization. Many Californians qualify for government assistance to lower their monthly costs.</p>
+            <button onClick={() => setShowQuiz('individual')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Check Your Subsidy Eligibility</button>
           </div>
 
-          <button onClick={() => setShowQuiz('individual')} className="w-full px-4 py-2 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 text-sm">Check Your Subsidy Eligibility</button>
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div className="rounded-lg overflow-hidden shadow-lg">
+              <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=400&fit=crop" alt="Individual and family plans" className="w-full h-80 object-cover"/>
+            </div>
+
+            <div className="space-y-3">
+              <div className="bg-blue-50 rounded p-4 border border-blue-200">
+                <p className="font-semibold text-gray-900 text-sm mb-1">✓ No exclusions for pre-existing conditions</p>
+                <p className="text-xs text-gray-600">Everyone accepted. Always covered.</p>
+              </div>
+              <div className="bg-green-50 rounded p-4 border border-green-200">
+                <p className="font-semibold text-gray-900 text-sm mb-1">✓ Tax credits based on income</p>
+                <p className="text-xs text-gray-600">Individual max: $37k | Family of 4: $76k for full subsidy eligibility</p>
+              </div>
+              <div className="bg-purple-50 rounded p-4 border border-purple-200">
+                <p className="font-semibold text-gray-900 text-sm mb-1">✓ 4 plan types available</p>
+                <p className="text-xs text-gray-600">Bronze (60%) to Platinum (90%). Pick your coverage level and monthly cost.</p>
+              </div>
+              <div className="bg-amber-50 rounded p-4 border border-amber-200">
+                <p className="font-semibold text-gray-900 text-sm mb-1">✓ Annual open enrollment</p>
+                <p className="text-xs text-gray-600">Sign up yearly or when you have qualifying life events.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-blue-100 border border-blue-300 rounded-lg p-8 text-center">
+            <p className="text-gray-900 font-semibold mb-4 text-lg">See how much you could save on monthly premiums.</p>
+            <button onClick={() => setShowQuiz('individual')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Get Your Subsidy Estimate</button>
+          </div>
         </section>
       )}
 
       {activeMain === 'group' && (
-        <section className="max-w-3xl mx-auto px-6 py-8">
-          <div className="rounded-lg overflow-hidden shadow-lg mb-6">
-            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=400&fit=crop" alt="Group benefits" className="w-full h-64 object-cover"/>
-          </div>
+        <section className="max-w-4xl mx-auto px-6 py-8">
+          <button onClick={() => setActiveMain('home')} className="mb-6 text-blue-600 hover:text-blue-700 text-sm font-semibold">← Back to Home</button>
           
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Group Coverage for Businesses</h2>
-          
-          <p className="text-sm text-gray-700 mb-6">Offering health coverage attracts talent, is tax-deductible, and qualifies for government tax credits.</p>
-
-          <div className="space-y-3 mb-6">
-            <div className="bg-blue-50 rounded p-3 border border-blue-200">
-              <p className="font-semibold text-gray-900 text-sm mb-1">SHOP Marketplace</p>
-              <p className="text-xs text-gray-600">2-50 employees eligible. Up to 50% federal tax credit. Guaranteed coverage.</p>
-            </div>
-            <div className="bg-green-50 rounded p-3 border border-green-200">
-              <p className="font-semibold text-gray-900 text-sm mb-1">Costs: $350-800/employee/month</p>
-              <p className="text-xs text-gray-600">You typically pay 50-75% (tax-deductible).</p>
-            </div>
-            <div className="bg-purple-50 rounded p-3 border border-purple-200">
-              <p className="font-semibold text-gray-900 text-sm mb-1">Employee choice</p>
-              <p className="text-xs text-gray-600">Employees pick their plan within your contribution level.</p>
-            </div>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Group Coverage for Your Business</h1>
+            <p className="text-gray-700 text-lg mb-6">Offering health coverage attracts talent, is tax-deductible, and qualifies for significant government tax credits through the SHOP marketplace.</p>
+            <button onClick={() => setShowQuiz('group')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Calculate Your Tax Credits</button>
           </div>
 
-          <button onClick={() => setShowQuiz('group')} className="w-full px-4 py-2 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 text-sm">Calculate Your Tax Credits</button>
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div className="rounded-lg overflow-hidden shadow-lg">
+              <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop" alt="Group benefits" className="w-full h-80 object-cover"/>
+            </div>
+
+            <div className="space-y-3">
+              <div className="bg-blue-50 rounded p-4 border border-blue-200">
+                <p className="font-semibold text-gray-900 text-sm mb-1">✓ SHOP Marketplace Eligible</p>
+                <p className="text-xs text-gray-600">2-50 employees. Up to 50% federal tax credit. Guaranteed coverage.</p>
+              </div>
+              <div className="bg-green-50 rounded p-4 border border-green-200">
+                <p className="font-semibold text-gray-900 text-sm mb-1">✓ Predictable Costs</p>
+                <p className="text-xs text-gray-600">$350-800/employee/month. You pay 50-75% (tax-deductible).</p>
+              </div>
+              <div className="bg-purple-50 rounded p-4 border border-purple-200">
+                <p className="font-semibold text-gray-900 text-sm mb-1">✓ Employee Choice</p>
+                <p className="text-xs text-gray-600">Employees pick their own plan within your contribution level.</p>
+              </div>
+              <div className="bg-amber-50 rounded p-4 border border-amber-200">
+                <p className="font-semibold text-gray-900 text-sm mb-1">✓ Talent Retention</p>
+                <p className="text-xs text-gray-600">Health benefits are a top reason employees stay long-term.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-blue-100 border border-blue-300 rounded-lg p-8 text-center">
+            <p className="text-gray-900 font-semibold mb-4 text-lg">See how much your business could save with federal tax credits.</p>
+            <button onClick={() => setShowQuiz('group')} className="px-8 py-4 bg-blue-600 text-white rounded font-bold text-lg hover:bg-blue-700">Calculate Your Tax Credit Estimate</button>
+          </div>
         </section>
       )}
 

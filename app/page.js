@@ -14,9 +14,6 @@ export default function Home() {
   }
 
   const handleOpenQuiz = (quizType) => {
-    setQuizAnswers({})
-    setQuizResults(null)
-    setAiAssessment(null)
     setShowQuiz(quizType)
   }
 
@@ -573,20 +570,18 @@ export default function Home() {
                       <strong>📋 Your contact info helps us follow up with personalized recommendations</strong>
                     </div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Name</label>
-                    <input type="text" placeholder="Your name" onChange={(e) => handleQuizAnswer('name', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="text" placeholder="Your name" value={quizAnswers.name || ''} onChange={(e) => handleQuizAnswer('name', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Email</label>
-                    <input type="email" placeholder="Your email" onChange={(e) => handleQuizAnswer('email', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="email" placeholder="Your email" value={quizAnswers.email || ''} onChange={(e) => handleQuizAnswer('email', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Phone</label>
-                    <input type="tel" placeholder="(619) XXX-XXXX" onChange={(e) => handleQuizAnswer('phone', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="tel" placeholder="(619) XXX-XXXX" value={quizAnswers.phone || ''} onChange={(e) => handleQuizAnswer('phone', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Age?</label>
-                    <input type="number" placeholder="65" value={quizAnswers.age || ''} onChange={(e) => handleQuizAnswer('age', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" />
-                    {quizAnswers.age && <p className="text-xs text-gray-500 mt-1">You entered: {quizAnswers.age}</p>}
-                    </div>
+                    <input type="number" placeholder="65" value={quizAnswers.age || ''} onChange={(e) => handleQuizAnswer('age', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Currently employed?</label>
                     <div className="flex gap-3"><button onClick={() => handleQuizAnswer('employed', 'yes')} className={`px-4 py-2 rounded text-sm ${quizAnswers.employed === 'yes' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>Yes</button>
                     <button onClick={() => handleQuizAnswer('employed', 'no')} className={`px-4 py-2 rounded text-sm ${quizAnswers.employed === 'no' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>No</button></div></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Household income?</label>
-                    <select onChange={(e) => handleQuizAnswer('income', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
+                    <select value={quizAnswers.income || ''} onChange={(e) => handleQuizAnswer('income', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
                       <option value="">Select...</option>
                       <option value="under25">Under $25,000</option>
                       <option value="25to50">$25,000 - $50,000</option>
@@ -599,7 +594,7 @@ export default function Home() {
                     <div className="flex gap-3"><button onClick={() => handleQuizAnswer('conditions', 'yes')} className={`px-4 py-2 rounded text-sm ${quizAnswers.conditions === 'yes' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>Yes</button>
                     <button onClick={() => handleQuizAnswer('conditions', 'no')} className={`px-4 py-2 rounded text-sm ${quizAnswers.conditions === 'no' ? 'bg-blue-600 text-white' : 'border border-gray-300'}`}>No</button></div></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Regular medications?</label>
-                    <select onChange={(e) => handleQuizAnswer('medications', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
+                    <select value={quizAnswers.medications || ''} onChange={(e) => handleQuizAnswer('medications', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
                       <option value="">Select...</option>
                       <option value="0">None</option>
                       <option value="1">1-2</option>
@@ -616,13 +611,13 @@ export default function Home() {
                       <strong>📋 Your contact info helps us follow up with personalized recommendations</strong>
                     </div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Name</label>
-                    <input type="text" placeholder="Your name" onChange={(e) => handleQuizAnswer('name', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="text" placeholder="Your name" value={quizAnswers.name || ''} onChange={(e) => handleQuizAnswer('name', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Email</label>
-                    <input type="email" placeholder="Your email" onChange={(e) => handleQuizAnswer('email', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="email" placeholder="Your email" value={quizAnswers.email || ''} onChange={(e) => handleQuizAnswer('email', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Phone</label>
-                    <input type="tel" placeholder="(619) XXX-XXXX" onChange={(e) => handleQuizAnswer('phone', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="tel" placeholder="(619) XXX-XXXX" value={quizAnswers.phone || ''} onChange={(e) => handleQuizAnswer('phone', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Household income?</label>
-                    <select onChange={(e) => handleQuizAnswer('ind_income', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
+                    <select value={quizAnswers.ind_income || ''} onChange={(e) => handleQuizAnswer('ind_income', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
                       <option value="">Select...</option>
                       <option value="under25">Under $25,000</option>
                       <option value="25to50">$25,000 - $50,000</option>
@@ -632,7 +627,7 @@ export default function Home() {
                       <option value="150plus">$150,000+</option>
                     </select></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Household size?</label>
-                    <select onChange={(e) => handleQuizAnswer('ind_household', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
+                    <select value={quizAnswers.ind_household || ''} onChange={(e) => handleQuizAnswer('ind_household', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm">
                       <option value="">Select...</option>
                       <option value="1">1 (just me)</option>
                       <option value="2">2</option>
@@ -656,19 +651,19 @@ export default function Home() {
                       <strong>📋 Your contact info helps us follow up with personalized recommendations</strong>
                     </div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Name</label>
-                    <input type="text" placeholder="Your name" onChange={(e) => handleQuizAnswer('name', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="text" placeholder="Your name" value={quizAnswers.name || ''} onChange={(e) => handleQuizAnswer('name', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Email</label>
-                    <input type="email" placeholder="Your email" onChange={(e) => handleQuizAnswer('email', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="email" placeholder="Your email" value={quizAnswers.email || ''} onChange={(e) => handleQuizAnswer('email', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Phone</label>
-                    <input type="tel" placeholder="(619) XXX-XXXX" onChange={(e) => handleQuizAnswer('phone', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="tel" placeholder="(619) XXX-XXXX" value={quizAnswers.phone || ''} onChange={(e) => handleQuizAnswer('phone', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Company name</label>
-                    <input type="text" placeholder="Your company" onChange={(e) => handleQuizAnswer('company', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="text" placeholder="Your company" value={quizAnswers.company || ''} onChange={(e) => handleQuizAnswer('company', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Number of employees?</label>
-                    <input type="number" placeholder="25" onChange={(e) => handleQuizAnswer('group_employees', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="number" placeholder="25" value={quizAnswers.group_employees || ''} onChange={(e) => handleQuizAnswer('group_employees', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Average employee salary?</label>
-                    <input type="number" placeholder="50000" onChange={(e) => handleQuizAnswer('group_salary', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="number" placeholder="50000" value={quizAnswers.group_salary || ''} onChange={(e) => handleQuizAnswer('group_salary', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <div><label className="block text-sm font-semibold text-gray-900 mb-2">Budget per employee/month?</label>
-                    <input type="number" placeholder="350" onChange={(e) => handleQuizAnswer('group_budget', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
+                    <input type="number" placeholder="350" value={quizAnswers.group_budget || ''} onChange={(e) => handleQuizAnswer('group_budget', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded text-sm" /></div>
                     <button onClick={calculateGroupResults} className="w-full px-6 py-3 bg-blue-600 text-white rounded font-bold hover:bg-blue-700 text-sm">Calculate Tax Credits</button>
                   </>
                 )}

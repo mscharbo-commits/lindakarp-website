@@ -23,32 +23,23 @@ export default function Home() {
   const generateAiAssessment = async (quizType, answers, recommendations) => {
     setLoadingAssessment(true)
     try {
-      const prompt = quizType === 'medicare' 
-        ? `You are an insurance sales coach. Analyze this Medicare lead and provide a brief pitch strategy (3-4 sentences max) for Linda to follow up with them. Their info: Age: ${answers.age}, Employment: ${answers.employed}, Chronic conditions: ${answers.conditions}, Medications: ${answers.medications}. Their recommended plan: ${recommendations[0]}. Give specific talking points focused on their situation.`
-        : quizType === 'individual'
-        ? `You are an insurance sales coach. Analyze this Individual/Family plan lead and provide a brief pitch strategy (3-4 sentences max) for Linda to follow up with them. Their info: Household size: ${answers.ind_household}, Income: ${answers.ind_income}, Employment: ${answers.ind_employed}, Pre-existing: ${answers.ind_preexisting}. Recommended subsidy level: ${recommendations[0]}. Give specific talking points focused on their savings opportunity.`
-        : `You are an insurance sales coach. Analyze this Group benefits lead and provide a brief pitch strategy (3-4 sentences max) for Linda to follow up with them. Their info: Company: ${answers.company || 'Not provided'}, Employees: ${answers.group_employees}, Salary: ${answers.group_salary}, Budget: ${answers.group_budget}. Tax credit available: ${recommendations[0]}. Give specific talking points focused on attracting/retaining talent and tax savings.`
-
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch('/api/assessment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'claude-opus-4-1',
-          max_tokens: 300,
-          messages: [
-            { role: 'user', content: prompt }
-          ]
+          quizType,
+          answers,
+          recommendations
         })
       })
 
       if (response.ok) {
         const data = await response.json()
-        const assessmentText = data.content[0].type === 'text' ? data.content[0].text : ''
-        setAiAssessment(assessmentText)
+        setAiAssessment(data.assessment)
       } else {
-        console.error('API error:', response.status)
+        console.error('Assessment API error:', response.status)
         setAiAssessment('Sales pitch assessment unavailable.')
       }
     } catch (err) {
